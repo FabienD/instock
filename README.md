@@ -2,8 +2,8 @@
 # A litte side project to learn
 
  * Rust, 
- * NuxtJS, to 
- * explore Hasura and more.
+ * NuxtJS,
+ * Explore Hasura and more.
 
 The goal of this side project is :
 

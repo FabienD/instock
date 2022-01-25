@@ -1,0 +1,15 @@
+services:
+
+  db:
+    image: timescale/timescaledb:latest-pg13
+    container_name: db.instock
+    env_file: .env  
+    ports: 
+      - 5434:5432
+
+
+# Network
+networks:
+  default:
+    external:
+      name: myprod_dev

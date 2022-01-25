@@ -1,16 +1,15 @@
 -- Merchant plateform
 
-CREATE TYPE merchant AS ENUM ('amazon_fr', 'fnac_fr', 'cdiscount_fr');
+CREATE TYPE merchant AS ENUM ('AmazonFr', 'FnacFr', 'CdiscountFr');
 
 -- Product table
 
-CREATE TABLE product IF NOT EXISTS  {
-    ean text NOT NULL,
+CREATE TABLE IF NOT EXISTS product (
+    id serial PRIMARY KEY,
     url text UNIQUE NOT NULL,
     name text NOT NULL,
     description text,
-    merchant merchant,
-    tracked BOOLEAN DEFAULT false,
-    PRIMARY KEY (ean, merchant)
-}
-
+    merchant merchant NOT NULL,
+    upc text,
+    tracked BOOLEAN DEFAULT false
+)
