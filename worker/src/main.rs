@@ -3,9 +3,12 @@ use std::env;
 use dotenv::dotenv;
 
 mod scrap;
-mod model;
+mod product;
+mod tracking;
+
 pub use scrap::*;
-pub use model::*;
+pub use product::*;
+pub use tracking::*;
 
 
 #[tokio::main]

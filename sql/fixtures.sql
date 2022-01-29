@@ -1,4 +1,4 @@
-INSERT INTO product (url, merchant, name, description, upc, tracked) 
+INSERT INTO  instock.product (url, merchant, name, description, upc, tracked) 
 VALUES
     ('https://www.amazon.fr/PlayStation-%C3%89dition-Standard-DualSense-Couleur/dp/B08H93ZRK9', 'AmazonFr','Sony PlayStation 5 Édition Standard', null, '808223051645', true),
     ('https://www.amazon.fr/PlayStation-Digital-Manette-DualSense-Couleur/dp/B08H98GVK8', 'AmazonFr','Sony PlayStation 5 Édition Digital', null, '808223010987', true),

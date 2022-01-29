@@ -7,10 +7,9 @@ edition = "2021"
 
 [dependencies]
 dotenv = "*"
-sqlx = { version = "0.5", features = [ "runtime-tokio-rustls", "postgres", "macros", "json" ] }
+sqlx = { version = "0.5", features = [ "runtime-tokio-rustls", "postgres", "macros", "chrono" ] }
 tokio = { version = "^1.0", features = ["full"] }
-reqwest="0.11.9"
+chrono = "*"
+reqwest ="0.11.9"
 scraper = "*"
 futures = "*"
-serde = "*"
-anyhow = "*"
