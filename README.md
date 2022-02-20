@@ -1,9 +1,9 @@
 
 # A litte side project to learn
 
- * Rust, 
- * NuxtJS,
- * Explore Hasura and more.
+ * Rust API with actix,
+ * Rust worker,
+ * React + Typescript,
 
 The goal of this side project is :
 
