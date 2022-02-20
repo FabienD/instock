@@ -1,0 +1,68 @@
+{
+  "db": "PostgreSQL",
+  "9c3c9cee2451ae640bce43fb30fe475021f506bf7450468d3ac137a47253b631": {
+    "query": "\n                SELECT \n                    p.id,\n                    p.merchant as \"merchant!: Merchant\",\n                    p.url,\n                    p.name,\n                    p.description,\n                    p.upc,\n                    p.tracked\n                FROM instock.product AS p\n                WHERE p.tracked\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id",
+          "type_info": "Int4"
+        },
+        {
+          "ordinal": 1,
+          "name": "merchant!: Merchant",
+          "type_info": {
+            "Custom": {
+              "name": "merchant",
+              "kind": {
+                "Enum": [
+                  "AmazonFr",
+                  "FnacFr",
+                  "CdiscountFr"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "ordinal": 2,
+          "name": "url",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 3,
+          "name": "name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 4,
+          "name": "description",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 5,
+          "name": "upc",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 6,
+          "name": "tracked",
+          "type_info": "Bool"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true
+      ]
+    }
+  }
+}
