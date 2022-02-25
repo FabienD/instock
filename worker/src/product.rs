@@ -10,44 +10,35 @@ pub enum Merchant {
 }
 
 #[derive(Debug, FromRow)]
-pub struct Product {
+pub struct MerchantProduct {
     pub id: i32,
     pub merchant: Merchant,
     pub url: String,
-    pub name: String,
-    pub description: Option<String>,
-    pub upc: Option<String>,
     pub tracked: Option<bool>,
 }
 
-impl Product {
+impl MerchantProduct {
     pub async fn list_tracked_products(
         pool: &PgPool
-    ) -> Result<Vec<Product>, Box<dyn std::error::Error>> {
+    ) -> Result<Vec<MerchantProduct>, Box<dyn std::error::Error>> {
         let products = sqlx::query!(
             r#"
                 SELECT 
-                    p.id,
-                    p.merchant as "merchant!: Merchant",
-                    p.url,
-                    p.name,
-                    p.description,
-                    p.upc,
-                    p.tracked
-                FROM instock.product AS p
-                WHERE p.tracked
+                    mp.id,
+                    mp.merchant as "merchant!: Merchant",
+                    mp.url,
+                    mp.tracked
+                FROM instock.merchant_product AS mp
+                WHERE mp.tracked
             "#
         )
         .fetch_all(pool)
         .await?
         .into_iter()
-        .map(|rec| Product {
+        .map(|rec| MerchantProduct {
             id: rec.id,
             merchant: rec.merchant,
             url: rec.url,
-            name: rec.name,
-            description: rec.description,
-            upc: rec.upc,
             tracked: rec.tracked
         })
         .collect();

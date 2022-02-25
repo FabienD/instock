@@ -3,7 +3,7 @@ use sqlx::postgres::PgPool;
 use futures::{stream, StreamExt}; 
 use reqwest::Client;
 
-use crate::Product;
+use crate::MerchantProduct;
 use crate::Tracking;
 
 const PARALLEL_REQUESTS: usize = 6;
@@ -41,7 +41,7 @@ async fn scrap(body: &str) -> Result<ScrapProductInfo,  Box<dyn std::error::Erro
 
 pub async fn process_request(pool: &PgPool) {
     // Get urls from Database
-    let product_urls = Product::list_tracked_products(pool).await;
+    let product_urls = MerchantProduct::list_tracked_products(pool).await;
 
     let products = match product_urls {
         Ok(p) => p,

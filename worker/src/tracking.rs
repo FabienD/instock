@@ -19,14 +19,14 @@ impl Tracking {
     ) -> Result<(), Box<dyn std::error::Error>> {
         let tracking = sqlx::query(
             "
-            WITH product_id AS (
-                SELECT id FROM instock.product
+            WITH merchant_product_id AS (
+                SELECT id FROM instock.merchant_product
                 WHERE url = $1
             )
-            INSERT INTO instock.tracking (product_id, is_in_stock, tracked_at) VALUES (
-                (SELECT id FROM product_id), $2, now()
+            INSERT INTO instock.tracking (merchant_product_id, is_in_stock, tracked_at) VALUES (
+                (SELECT id FROM merchant_product_id), $2, now()
             )
-            RETURNING product_id
+            RETURNING merchant_product_id
             "
         )
         .bind(url)
