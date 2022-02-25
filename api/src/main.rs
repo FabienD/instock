@@ -15,6 +15,7 @@ use std::env;
 
 // import tracking module (routes and models)
 mod tracking;
+mod product;
 
 
 #[actix_web::main]
@@ -58,7 +59,8 @@ async fn main() -> Result<()> {
                     .max_age(3600),
             )
             .app_data(web::Data::new(pool.clone()))
-            .service(web::scope("/api/products").configure(tracking::init))
+            .service(web::scope("/api/tracking").configure(tracking::init))
+            .service(web::scope("/api/product").configure(product::init))
     })
     .bind("127.0.0.1:8080")?;
 

@@ -40,15 +40,16 @@ impl Tracking {
         let products = sqlx::query!(
             r#"
             SELECT 
-                DISTINCT ON (t.product_id) t.product_id, 
-                p.name as product_name, 
-                p.url as product_url, 
-                p.merchant as "merchant!: Merchant", 
+                DISTINCT ON (t.merchant_product_id) t.merchant_product_id, 
+                p.name as product_name,
+                mp.url as product_url,
+                mp.merchant as "merchant!: Merchant",
                 t.is_in_stock, 
                 t.tracked_at 
             FROM instock.tracking AS t
-                JOIN instock.product AS p ON p.id = t.product_id
-            ORDER BY t.product_id, t.tracked_at DESC
+                JOIN instock.merchant_product AS mp ON mp.id = t.merchant_product_id
+                JOIN instock.product AS p  ON p.id = mp.product_id
+            ORDER BY t.merchant_product_id, t.tracked_at DESC
             "#
         )
         .fetch_all(pool)
