@@ -6,31 +6,60 @@ CREATE SCHEMA instock
 
 CREATE TYPE instock.merchant AS ENUM ('AmazonFr', 'FnacFr', 'CdiscountFr');
 
+-- Brand table
+
+CREATE TABLE IF NOT EXISTS instock.brand (
+    id serial PRIMARY KEY,
+    name text NOT NULL,
+    description text
+);
+
 -- Product table
 
 CREATE TABLE IF NOT EXISTS instock.product (
     id serial PRIMARY KEY,
-    url text UNIQUE NOT NULL,
     name text NOT NULL,
     description text,
-    merchant instock.merchant NOT NULL,
+    brand_id int NOT NULL,
     upc text,
+    url text
+);
+
+ALTER TABLE  instock.product
+ADD CONSTRAINT product_brand_id_fk
+    FOREIGN KEY (brand_id)
+    REFERENCES  instock.brand(id)
+    ON DELETE CASCADE;
+
+-- Merchant Product table
+
+CREATE TABLE IF NOT EXISTS instock.merchant_product (
+    id serial PRIMARY KEY,
+    url text UNIQUE NOT NULL,
+    product_id int NOT NULL,
+    merchant instock.merchant NOT NULL,
     tracked BOOLEAN DEFAULT false
 );
+
+ALTER TABLE  instock.merchant_product
+ADD CONSTRAINT merchant_product_product_id_fk
+    FOREIGN KEY (product_id)
+    REFERENCES  instock.product(id)
+    ON DELETE CASCADE;
 
 -- Tracking table
 
 CREATE TABLE IF NOT EXISTS  instock.tracking (
-    product_id int,
+    merchant_product_id int,
     is_in_stock BOOLEAN NOT NULL DEFAULT false,
     tracked_at TIMESTAMP WITH TIME ZONE,
-    PRIMARY KEY(product_id, tracked_at)
+    PRIMARY KEY(merchant_product_id, tracked_at)
 );
 
 ALTER TABLE  instock.tracking
-ADD CONSTRAINT tracking_product_id_fk
-    FOREIGN KEY (product_id)
-    REFERENCES  instock.product(id)
+ADD CONSTRAINT tracking_merchant_product_id_fk
+    FOREIGN KEY (merchant_product_id)
+    REFERENCES  instock.merchant_product(id)
     ON DELETE CASCADE;
 
 -- User table
@@ -46,11 +75,11 @@ CREATE TABLE IF NOT EXISTS  instock.user (
 
 CREATE TABLE IF NOT EXISTS instock.user_tracking (
     user_id int,
-    product_id int,
+    merchant_product_id int,
     alerted_at TIMESTAMP WITH TIME ZONE,
     alert_count int DEFAULT 0,
     alert_count_max int DEFAULT 5,
-    PRIMARY KEY(user_id, product_id)
+    PRIMARY KEY(user_id, merchant_product_id)
 );
 
 ALTER TABLE  instock.user_tracking
@@ -60,7 +89,7 @@ ADD CONSTRAINT user_tracking_user_id_fk
     ON DELETE CASCADE;
 
 ALTER TABLE  instock.user_tracking
-ADD CONSTRAINT user_tracking_product_id_fk
-    FOREIGN KEY (product_id)
-    REFERENCES  instock.product(id)
+ADD CONSTRAINT user_tracking_merchantproduct_id_fk
+    FOREIGN KEY (merchant_product_id)
+    REFERENCES  instock.merchant_product(id)
     ON DELETE CASCADE;
