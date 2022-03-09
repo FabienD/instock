@@ -4,18 +4,18 @@ use anyhow::Result;
 use serde::Serialize;
 use sqlx::FromRow;
 use sqlx::PgPool;
+use sqlx::types::Uuid;
 
 
 #[derive(Debug, FromRow, Serialize)]
 pub struct Brand {
-    id: i32,
+    id: Uuid,
     name: String,
-    description: Option<String>,
 }
 
 #[derive(Debug, FromRow, Serialize)]
 pub struct Product {
-    id: i32,
+    id: Uuid,
     name: String,
     description: Option<String>,
     brand: Brand,
@@ -44,8 +44,7 @@ impl Product {
                 p.url,
                 p.upc,
                 p.brand_id,
-                b.name as brand_name,
-                b.description as brand_description
+                b.name as brand_name
             FROM instock.product AS p
                 JOIN instock.brand AS b ON b.id = p.brand_id
             ORDER BY p.id
@@ -63,7 +62,6 @@ impl Product {
             brand: Brand {
                 id: rec.brand_id,
                 name: rec.brand_name,
-                description: rec.brand_description
             }
         })
         .collect();

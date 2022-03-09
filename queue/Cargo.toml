@@ -1,0 +1,29 @@
+[package]
+name = "instock-rmq"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "instock-consumer"
+path = "src/consumer.rs"
+
+[[bin]]
+name = "instock-producer"
+path = "src/producer.rs"
+
+[dependencies]
+async-global-executor = "*"
+futures-lite = "*"
+sqlx = { version = "0.5", features = [ "runtime-async-std-native-tls" , "postgres", "json", "uuid", "macros", "chrono", "migrate", "offline" ] }
+serde = "1"
+uuid = { version = "0.8", features = ["serde", "v4"] }
+serde_json = "1"
+chrono = { version = "*", features = ["serde"] } 
+lapin = "2.0"
+dotenv = "0.15"
+anyhow = "1.0"
+syslog = "6.0"
+log = "0.4"
+scraper = "*"
+isahc = { version = "1.6", features = ["cookies"] }
+rand = "0.8"

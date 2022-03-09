@@ -4,25 +4,31 @@ CREATE SCHEMA instock
 
 -- Merchant plateform
 
-CREATE TYPE instock.merchant AS ENUM ('AmazonFr', 'FnacFr', 'CdiscountFr');
+CREATE TABLE IF NOT EXISTS instock.merchant (
+    id UUID PRIMARY KEY,
+    name text NOT NULL,
+    scraping_elements jsonb NOT NULL,
+    settings jsonb
+);
+
 
 -- Brand table
 
 CREATE TABLE IF NOT EXISTS instock.brand (
-    id serial PRIMARY KEY,
-    name text NOT NULL,
-    description text
+    id UUID PRIMARY KEY,
+    name text NOT NULL
 );
 
 -- Product table
 
 CREATE TABLE IF NOT EXISTS instock.product (
-    id serial PRIMARY KEY,
+    id UUID PRIMARY KEY,
     name text NOT NULL,
     description text,
-    brand_id int NOT NULL,
+    brand_id UUID NOT NULL,
     upc text,
-    url text
+    url text,
+    image text
 );
 
 ALTER TABLE  instock.product
@@ -34,10 +40,10 @@ ADD CONSTRAINT product_brand_id_fk
 -- Merchant Product table
 
 CREATE TABLE IF NOT EXISTS instock.merchant_product (
-    id serial PRIMARY KEY,
+    id UUID PRIMARY KEY,
     url text UNIQUE NOT NULL,
-    product_id int NOT NULL,
-    merchant instock.merchant NOT NULL,
+    product_id UUID NOT NULL,
+    merchant_id UUID NOT NULL,
     tracked BOOLEAN DEFAULT false
 );
 
@@ -50,7 +56,7 @@ ADD CONSTRAINT merchant_product_product_id_fk
 -- Tracking table
 
 CREATE TABLE IF NOT EXISTS  instock.tracking (
-    merchant_product_id int,
+    merchant_product_id UUID,
     is_in_stock BOOLEAN NOT NULL DEFAULT false,
     tracked_at TIMESTAMP WITH TIME ZONE,
     PRIMARY KEY(merchant_product_id, tracked_at)
@@ -65,7 +71,7 @@ ADD CONSTRAINT tracking_merchant_product_id_fk
 -- User table
 
 CREATE TABLE IF NOT EXISTS  instock.user (
-    id serial PRIMARY KEY,
+    id UUID PRIMARY KEY,
     email varchar(254) UNIQUE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE
 );
@@ -74,8 +80,8 @@ CREATE TABLE IF NOT EXISTS  instock.user (
 -- User alerting table
 
 CREATE TABLE IF NOT EXISTS instock.user_tracking (
-    user_id int,
-    merchant_product_id int,
+    user_id UUID,
+    merchant_product_id UUID,
     alerted_at TIMESTAMP WITH TIME ZONE,
     alert_count int DEFAULT 0,
     alert_count_max int DEFAULT 5,

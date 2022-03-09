@@ -1,50 +1,40 @@
-extern crate syslog;
 #[macro_use]
 extern crate log;
 
-
-use syslog::{Facility, Formatter3164, BasicLogger};
-use log::{LevelFilter};
 use actix_web::{http::header, web, App, HttpServer};
 use actix_cors::Cors;
 use anyhow::Result;
 use dotenv::dotenv;
-use sqlx::PgPool;
 use std::env;
-
 
 // import tracking module (routes and models)
 mod tracking;
 mod product;
+mod config;
 
+pub use crate::config::*;
 
-#[actix_web::main]
+#[tokio::main]
 async fn main() -> Result<()> {
     dotenv().ok();
 
     // Log configuration
-    let syslog_host = env::var("SYSLOG_HOST")
-        .expect("SYSLOG_HOST is not set in .env file");
-
-    let formatter = Formatter3164 {
-        facility: Facility::LOG_LOCAL5,
-        hostname: None,
-        process: "instock_api".into(),
-        pid: 0,
-    };
-
-    let logger = syslog::udp(formatter, "localhost:1234", &syslog_host)
-        .expect("could not connect to syslog");
-
-    if let Ok(()) = log::set_boxed_logger(Box::new(BasicLogger::new(logger))) {
-        log::set_max_level(LevelFilter::Info);
-    }
+    let syslog_dns = env::var("SYSLOG_DSN")
+        .expect("SYSLOG_DSN is not set in .env file");
     
-    // Database configuration
-    let database_url = env::var("DATABASE_URL")
+    init_logger(LoggerConfig {
+        host: syslog_dns,
+        facility: "local5".to_string(),
+        log_level: "Info".to_string(),
+    });
+    
+    // PostgreSQL configuration
+    let pg_dsn = env::var("DATABASE_URL")
         .expect("DATABASE_URL is not set in .env file");
-
-    let pool = PgPool::connect(&database_url).await?;
+    
+    let pool = init_db(DbConfig {
+        dsn: pg_dsn.to_string(),
+    }).await?;
     
     // Let's start HTTP server
     let server = HttpServer::new(move || {

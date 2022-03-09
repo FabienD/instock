@@ -3,16 +3,16 @@ name = "instock-api"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
-actix-web = "4.0.0"
-actix-cors = "0.6.0-beta.10"
-sqlx = { version = "0.5", features = [ "runtime-actix-native-tls" , "postgres", "macros", "chrono", "migrate", "offline" ] }
+tokio = { version = "^1.0", features = ["full"] }
+sqlx = { version = "0.5", features = [ "runtime-tokio-native-tls" , "postgres", "uuid", "macros", "chrono", "migrate", "offline" ] }
 serde = "1"
+uuid = { version = "0.8", features = ["serde", "v4"] }
 serde_json = "1"
 chrono = { version = "*", features = ["serde"] } 
+actix-web = "4.0"
+actix-cors = "0.6"
 anyhow = "1.0"
 dotenv = "0.15"
-log = "0.4"
 syslog = "6.0"
+log = "0.4"

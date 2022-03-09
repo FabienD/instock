@@ -1,12 +1,13 @@
 use sqlx::postgres::PgPool;
 use sqlx::FromRow;
+use sqlx::types::Uuid;
 use chrono::{DateTime, Utc};
 use crate::ScrapProductInfo;
 
 
 #[derive(Debug, FromRow)]
 pub struct Tracking {
-    product_id: i32,
+    product_id: Uuid,
     is_in_stock: bool,
     tracked_at: DateTime<Utc>,
 }

@@ -1,5 +1,6 @@
 use sqlx::postgres::PgPool;
 use sqlx::FromRow;
+use sqlx::types::Uuid;
 
 #[derive(sqlx::Type, Debug)]
 #[sqlx(type_name = "merchant")]
@@ -11,7 +12,7 @@ pub enum Merchant {
 
 #[derive(Debug, FromRow)]
 pub struct MerchantProduct {
-    pub id: i32,
+    pub id: Uuid,
     pub merchant: Merchant,
     pub url: String,
     pub tracked: Option<bool>,
