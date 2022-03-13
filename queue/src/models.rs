@@ -38,7 +38,7 @@ impl MerchantProduct {
                 m.scraping_elements as "scraping_elements: Json<ScrapingElements>"
             FROM instock.merchant_product AS mp
                 JOIN instock.merchant AS m ON m.id = mp.merchant_id
-            WHERE mp.tracked
+            WHERE mp.tracked IS TRUE
             "#
         )
         .fetch_all(pool)

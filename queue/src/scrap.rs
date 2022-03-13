@@ -4,18 +4,31 @@ use sqlx::postgres::PgPool;
 use anyhow::Result;
 use lapin::message::Delivery;
 use std::time::Duration;
+use voca_rs::strip;
+use regex::Regex;
+
 
 use isahc::{
     config::RedirectPolicy,
     cookies::{CookieJar},
     prelude::*,
-    Request,
-    Response,
-    Body
+    Request
 };
 
 pub use crate::models::*;
 
+#[derive(Debug)]
+pub struct CallResponse {
+    pub url: String,
+    pub status: u16,
+    pub body: String,
+}
+
+impl CallResponse {
+    fn is_success(&self) -> bool {
+        self.status <= 400 
+    }
+}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ParseProductInfo {
@@ -28,12 +41,11 @@ pub async fn handle_message(delivery: &Delivery) -> Result<()> {
     let merchant_product: MerchantProduct = serde_json::from_str(message).expect("Json message decoded");
     // Get url content.
     let url: String = merchant_product.url.unwrap(); 
-    let mut response = call_url(&url)
+    let call_response = call_url(&url)
         .await
         .expect("Call url");
     
-    if  response.status().is_success() {
-        let body = response.text()?;
+    if  call_response.is_success() {
         // Get scraping elements by merchant
         let scaping_elements = merchant_product.merchant.scraping_elements
             .expect("Get scraping elements");
@@ -41,7 +53,7 @@ pub async fn handle_message(delivery: &Delivery) -> Result<()> {
         let title = scaping_elements.title.to_owned();
         let cart = scaping_elements.cart.to_owned();
         // Parse response body
-        let parse_result = parse_body(&body, &title, &cart)
+        let parse_result = parse_body(&call_response.body, &title, &cart)
             .await
             .expect("Parsing result");
         
@@ -49,15 +61,15 @@ pub async fn handle_message(delivery: &Delivery) -> Result<()> {
 
     } else {
         // TODO manage response error
-        println!("Status : {:?} - {:?}", response.status(), url);
+        println!("Status : {:?} - {:?}", call_response.status, url);
     }
     
     Ok(())
 }
 
-async fn call_url(url: &String) -> Result<Response<Body>> {
+async fn call_url(url: &String) -> Result<CallResponse> {
     let cookie_jar = CookieJar::new();
-    let response = Request::get(url)
+    let mut response = Request::get(url)
         .redirect_policy(RedirectPolicy::Follow)
         .redirect_policy(RedirectPolicy::Limit(5))
         .timeout(Duration::from_secs(5))
@@ -68,7 +80,14 @@ async fn call_url(url: &String) -> Result<Response<Body>> {
         .send()
         .expect("Process request");
 
-    Ok(response)
+
+    let call_reponse = CallResponse {
+        url: url.to_string(),
+        status: response.status().as_u16(),
+        body: response.text()?
+    };
+
+    Ok(call_reponse)
 }
 
 
@@ -83,14 +102,24 @@ async fn parse_body(body: &str, title: &String, cart: &String) -> Result<ParsePr
     let mut title: String = String::from("");
     
     if document.select(&title_element).count() == 1 {
-        let title_node= document.select(&title_element). next().unwrap();
-        title = title_node.inner_html();
+        let title_node= document.select(&title_element).next().unwrap();
+        title = title_node.inner_html().to_string();
+        title = clean_title(&title).await.expect("Clean title");
     }
 
     let scrap_product_info = ParseProductInfo {
-        title: title.trim().to_string(),
+        title: title,
         in_stock: has_cart_button == 1,
     };
 
     Ok(scrap_product_info)
+}
+
+
+async fn clean_title(title: &String) -> Result<String> {
+    let mut title = strip::strip_tags(title.trim());
+    let re = Regex::new(r"[\t|\n|\r]+").unwrap();
+    title = re.replace_all(title.as_str(), " ").to_string();
+
+    Ok(title)
 }

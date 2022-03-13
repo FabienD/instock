@@ -27,3 +27,5 @@ log = "0.4"
 scraper = "*"
 isahc = { version = "1.6", features = ["cookies"] }
 rand = "0.8"
+regex = "1.5"
+voca_rs = "1.14"
