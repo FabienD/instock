@@ -47,7 +47,7 @@ impl Product {
                 b.name as brand_name
             FROM instock.product AS p
                 JOIN instock.brand AS b ON b.id = p.brand_id
-            ORDER BY p.id
+            ORDER BY p.brand_id, p.id
             "#
         )
         .fetch_all(pool)
