@@ -2,13 +2,16 @@
 CREATE SCHEMA instock
     AUTHORIZATION postgres;
 
+-- Scraping methods enum type
+CREATE TYPE instock.scraping_method AS ENUM ('library', 'browser');
+
 -- Merchant plateform
 
 CREATE TABLE IF NOT EXISTS instock.merchant (
     id UUID PRIMARY KEY,
     name text NOT NULL,
     scraping_elements jsonb NOT NULL,
-    settings jsonb
+    scraping_method instock.scraping_method NOT NULL DEFAULT('library')
 );
 
 

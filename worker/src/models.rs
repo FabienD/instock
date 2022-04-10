@@ -5,21 +5,39 @@ use sqlx::types::Json;
 use sqlx::types::Uuid;
 use sqlx::FromRow;
 use sqlx::PgPool;
+use std::fmt;
 
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
+#[derive(Debug, Copy, Clone, Serialize, Deserialize, sqlx::Type)]
+#[sqlx(rename_all = "snake_case")]
+pub enum ScrapingMethod {
+    Library,
+    Browser,
+}
+
+impl fmt::Display for ScrapingMethod {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            ScrapingMethod::Library => write!(f, "library"),
+            ScrapingMethod::Browser => write!(f, "browser"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
 pub struct ScrapingElements {
     pub title: String,
     pub cart: String,
 }
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
 pub struct Merchant {
     pub id: Option<Uuid>,
     pub scraping_elements: Option<Json<ScrapingElements>>,
+    pub scraping_method: Option<ScrapingMethod>,
 }
 
-#[derive(Debug, FromRow, Serialize, Deserialize)]
+#[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
 pub struct MerchantProduct {
     pub id: Option<Uuid>,
     pub url: Option<String>,
@@ -34,7 +52,8 @@ impl MerchantProduct {
                 mp.id,
                 mp.url,
                 m.id as merchant_id,
-                m.scraping_elements as "scraping_elements: Json<ScrapingElements>"
+                m.scraping_elements as "scraping_elements: Json<ScrapingElements>",
+                m.scraping_method as "scraping_method: ScrapingMethod"
             FROM instock.merchant_product AS mp
                 JOIN instock.merchant AS m ON m.id = mp.merchant_id
             WHERE mp.tracked IS TRUE
@@ -49,6 +68,7 @@ impl MerchantProduct {
             merchant: Merchant {
                 id: rec.merchant_id,
                 scraping_elements: rec.scraping_elements,
+                scraping_method: rec.scraping_method,
             },
         })
         .collect();

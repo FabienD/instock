@@ -35,13 +35,29 @@ pub async fn handle_message(delivery: &Delivery) -> Result<Tracking> {
     let merchant_product: MerchantProduct =
         serde_json::from_str(message).expect("Json message decoded");
     // Get url content.
-    let url: String = merchant_product.url.unwrap();
+    let url: String = merchant_product.url.as_ref().unwrap().to_owned();
+    // Merchant can use different scraping method.
+    let scraping_method = merchant_product.merchant.scraping_method.unwrap().to_owned();
     
-    // TODO : use call_url or call_url_browser
-    let call_response = call_url(&url).await.expect("Call url");
-    let tracking: Tracking;
+    if scraping_method.to_string() == ScrapingMethod::Library.to_string() {
+        handle_call_response(
+            merchant_product, 
+            call_url(&url).await.expect("Call url via library method.")
+        ).await
+    } else if scraping_method.to_string() == ScrapingMethod::Browser.to_string() {
+        handle_call_response(
+            merchant_product, 
+            call_url_browser(&url).await.expect("Call url via browser method.")
+        ).await
+    } else {
+        Err(anyhow!("Unknow call url scraping method."))
+    }
+}
 
-    if call_response.is_success() {
+async fn handle_call_response(merchant_product: MerchantProduct, call_response: CallResponse) -> Result<Tracking> {
+    let url = merchant_product.url.unwrap();
+
+    if call_response.is_success() {    
         // Get scraping elements by merchant
         let scaping_elements = merchant_product
             .merchant
@@ -50,19 +66,25 @@ pub async fn handle_message(delivery: &Delivery) -> Result<Tracking> {
 
         let title = scaping_elements.title.to_owned();
         let cart = scaping_elements.cart.to_owned();
+
         // Parse response body
         let parse_result = parse_body(&call_response.body, &title, &cart)
             .await
             .expect("Parsing result");
 
-        tracking = Tracking {
+        let tracking = Tracking {
             product_id: merchant_product.id.unwrap(),
             is_in_stock: parse_result.in_stock,
         };
+
+        if parse_result.title.is_empty() {
+            Err(anyhow!("Handle message error for : {:?}, title is empty.", url))
+        } else {
+           Ok(tracking)
+        }
         
-        Ok(tracking)
     } else {
-        Err(anyhow!("Handle message error"))
+        Err(anyhow!("Handle message error for : {:?}", url))
     }
 }
 
