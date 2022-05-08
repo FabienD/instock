@@ -6,6 +6,8 @@ use sqlx::types::Uuid;
 use sqlx::FromRow;
 use sqlx::PgPool;
 use std::fmt;
+use chrono::{DateTime, Utc};
+use chrono::serde::ts_seconds;
 
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize, sqlx::Type)]
@@ -100,11 +102,25 @@ impl Tracking {
         .execute(pool)
         .await;
         
-        match tracking {
-            Err(e) => eprintln!("An error occurred while inserting tracking results : {}", e),
-            Ok(_) => ()
-        }
+        if let Err(e) = tracking { eprintln!("An error occurred while inserting tracking results : {}", e) }
 
         Ok(())
     }
+}
+
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TrackedProduct {
+    pub product_id: Uuid,
+    pub product_name: String,
+    pub links: Vec<TrackedProductLinks>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct TrackedProductLinks {
+    pub merchant_product_url: String,
+    pub merchant: String,
+    pub is_in_stock: bool,
+    #[serde(with = "ts_seconds")]
+    pub tracked_at: DateTime<Utc>,
 }

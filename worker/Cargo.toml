@@ -4,12 +4,21 @@ version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "instock-consumer"
-path = "src/consumer.rs"
+name = "scrap-consumer"
+path = "src/scrap_consumer.rs"
 
 [[bin]]
-name = "instock-producer"
-path = "src/producer.rs"
+name = "scrap-producer"
+path = "src/scrap_producer.rs"
+
+[[bin]]
+name = "notifier-producer"
+path = "src/notifier_producer.rs"
+
+[[bin]]
+name = "notifier-consumer"
+path = "src/notifier_consumer.rs"
+
 
 [dependencies]
 async-global-executor = "*"

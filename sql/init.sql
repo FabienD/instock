@@ -76,7 +76,8 @@ ADD CONSTRAINT tracking_merchant_product_id_fk
 CREATE TABLE IF NOT EXISTS  instock.user (
     id UUID PRIMARY KEY,
     email varchar(254) UNIQUE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE
+    is_enabled BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
 
 
@@ -84,11 +85,11 @@ CREATE TABLE IF NOT EXISTS  instock.user (
 
 CREATE TABLE IF NOT EXISTS instock.user_tracking (
     user_id UUID,
-    merchant_product_id UUID,
+    product_id UUID,
     alerted_at TIMESTAMP WITH TIME ZONE,
     alert_count int DEFAULT 0,
     alert_count_max int DEFAULT 5,
-    PRIMARY KEY(user_id, merchant_product_id)
+    PRIMARY KEY(user_id, product_id)
 );
 
 ALTER TABLE  instock.user_tracking
@@ -98,7 +99,7 @@ ADD CONSTRAINT user_tracking_user_id_fk
     ON DELETE CASCADE;
 
 ALTER TABLE  instock.user_tracking
-ADD CONSTRAINT user_tracking_merchantproduct_id_fk
-    FOREIGN KEY (merchant_product_id)
-    REFERENCES  instock.merchant_product(id)
+ADD CONSTRAINT user_tracking_product_id_fk
+    FOREIGN KEY (product_id)
+    REFERENCES  instock.product(id)
     ON DELETE CASCADE;

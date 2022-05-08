@@ -8,9 +8,9 @@ mod config;
 mod models;
 mod scrap;
 
-pub use crate::config::*;
-pub use crate::models::*;
-pub use crate::scrap::*;
+pub use config::*;
+pub use models::*;
+pub use scrap::*;
 
 fn main() {
     dotenv().ok();
@@ -36,7 +36,7 @@ fn main() {
 
         channel
             .queue_declare(
-                "instock",
+                "scrap",
                 QueueDeclareOptions::default(),
                 FieldTable::default(),
             )

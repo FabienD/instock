@@ -5,8 +5,8 @@ use std::env;
 mod config;
 mod models;
 
-pub use crate::config::*;
-pub use crate::models::*;
+pub use config::*;
+pub use models::*;
 
 fn main() {
     dotenv().ok();

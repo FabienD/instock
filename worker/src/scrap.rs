@@ -94,7 +94,7 @@ async fn call_url(url: &String) -> Result<CallResponse> {
         .redirect_policy(RedirectPolicy::Follow)
         .redirect_policy(RedirectPolicy::Limit(5))
         .timeout(Duration::from_secs(5))
-        .cookie_jar(cookie_jar.clone())
+        .cookie_jar(cookie_jar)
         .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9")
         .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36")
         .body(())?
@@ -139,31 +139,31 @@ async fn call_url_browser(url: &String) -> Result<CallResponse> {
     Ok(call_reponse)
 }
 
-async fn parse_body(body: &str, title: &String, cart: &String) -> Result<ParseProductInfo> {
+async fn parse_body(body: &str, title: &str, cart: &str) -> Result<ParseProductInfo> {
     // Parsing HTML
     let document = Html::parse_document(body);
     // HTML Elements
-    let title_element = Selector::parse(&title).unwrap();
-    let add_to_cart_element = Selector::parse(&cart).unwrap();
+    let title_element = Selector::parse(title).unwrap();
+    let add_to_cart_element = Selector::parse(cart).unwrap();
     // Element values
     let has_cart_button = document.select(&add_to_cart_element).count();
     let mut title: String = String::from("");
 
     if document.select(&title_element).count() == 1 {
         let title_node = document.select(&title_element).next().unwrap();
-        title = title_node.inner_html().to_string();
+        title = title_node.inner_html();
         title = clean_title(&title).await.expect("Clean title");
     }
 
     let scrap_product_info = ParseProductInfo {
-        title: title,
+        title,
         in_stock: has_cart_button == 1,
     };
 
     Ok(scrap_product_info)
 }
 
-async fn clean_title(title: &String) -> Result<String> {
+async fn clean_title(title: &str) -> Result<String> {
     let mut title = strip::strip_tags(title.trim());
     let re = Regex::new(r"[\t|\n|\r]+").unwrap();
     title = re.replace_all(title.as_str(), " ").to_string();
