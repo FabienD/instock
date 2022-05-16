@@ -1,4 +1,6 @@
 use anyhow::Result;
+use chrono::serde::ts_seconds;
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use serde::Serialize;
 use sqlx::types::Json;
@@ -6,9 +8,6 @@ use sqlx::types::Uuid;
 use sqlx::FromRow;
 use sqlx::PgPool;
 use std::fmt;
-use chrono::{DateTime, Utc};
-use chrono::serde::ts_seconds;
-
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize, sqlx::Type)]
 #[sqlx(rename_all = "snake_case")]
@@ -85,29 +84,27 @@ pub struct Tracking {
 }
 
 impl Tracking {
-    pub async fn save(
-        &self,
-        pool: &PgPool
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn save(&self, pool: &PgPool) -> Result<(), Box<dyn std::error::Error>> {
         let tracking = sqlx::query(
             "
             INSERT INTO instock.tracking (merchant_product_id, is_in_stock, tracked_at) VALUES (
                 $1, $2, now()
             )
             RETURNING merchant_product_id
-            "
+            ",
         )
         .bind(self.product_id)
         .bind(self.is_in_stock)
         .execute(pool)
         .await;
-        
-        if let Err(e) = tracking { eprintln!("An error occurred while inserting tracking results : {}", e) }
+
+        if let Err(e) = tracking {
+            eprintln!("An error occurred while inserting tracking results : {}", e)
+        }
 
         Ok(())
     }
 }
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct TrackedProduct {

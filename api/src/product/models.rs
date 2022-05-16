@@ -2,10 +2,9 @@ use actix_web::body::BoxBody;
 use actix_web::{HttpRequest, HttpResponse, Responder};
 use anyhow::Result;
 use serde::Serialize;
+use sqlx::types::Uuid;
 use sqlx::FromRow;
 use sqlx::PgPool;
-use sqlx::types::Uuid;
-
 
 #[derive(Debug, FromRow, Serialize)]
 pub struct Brand {
@@ -32,9 +31,7 @@ impl Responder for Product {
 }
 
 impl Product {
-    pub async fn get(
-        pool: &PgPool
-    ) -> Result<Vec<Product>> {
+    pub async fn get(pool: &PgPool) -> Result<Vec<Product>> {
         let products = sqlx::query!(
             r#"
             SELECT
@@ -62,7 +59,7 @@ impl Product {
             brand: Brand {
                 id: rec.brand_id,
                 name: rec.brand_name,
-            }
+            },
         })
         .collect();
 

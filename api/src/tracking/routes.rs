@@ -9,18 +9,14 @@ pub fn init(cfg: &mut web::ServiceConfig) {
 }
 
 #[get("/last")]
-async fn get_last_tracking(
-    db_pool: web::Data<PgPool>
-) -> impl Responder {
-
+async fn get_last_tracking(db_pool: web::Data<PgPool>) -> impl Responder {
     let result = Tracking::get(db_pool.get_ref()).await;
 
     match result {
         Ok(products) => HttpResponse::Ok().json(products),
         Err(err) => {
             error!("error fetching products: {}", err);
-            HttpResponse::InternalServerError()
-                .body("Error occured while getting products.")
+            HttpResponse::InternalServerError().body("Error occured while getting products.")
         }
     }
 }

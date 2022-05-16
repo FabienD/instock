@@ -24,13 +24,13 @@ fn main() {
         let conn = init_rmq(RmqConfig { dsn: rmq_dns })
             .await
             .expect("connection error");
-        
+
         // PostgreSQL
         let pool = init_db(DbConfig {
             dsn: pg_dsn.to_string(),
         })
-            .await
-            .expect("DB pool create");
+        .await
+        .expect("DB pool create");
 
         let channel = conn.create_channel().await.expect("queue_declare");
 
@@ -52,22 +52,17 @@ fn main() {
             )
             .await
             .expect("basic_consume");
-        
+
         while let Some(delivery) = consumer.next().await {
             if let Ok(delivery) = delivery {
                 // Scraping product
-                let tracking  = handle_message(&delivery)
-                    .await;
+                let tracking = handle_message(&delivery).await;
                 // Save tracking result
                 match tracking {
-                    Ok(tracking) => {
-                        tracking.save(&pool)
-                            .await
-                            .expect("Save tracking result")
-                    },
-                    Err(e) => println!("{:?}", e)
+                    Ok(tracking) => tracking.save(&pool).await.expect("Save tracking result"),
+                    Err(e) => println!("{:?}", e),
                 };
-                
+
                 // Wait a little before next message
                 let wait_ms = rand::thread_rng().gen_range(1500..3000);
                 thread::sleep(Duration::from_millis(wait_ms));

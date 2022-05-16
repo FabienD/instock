@@ -37,27 +37,38 @@ pub async fn handle_message(delivery: &Delivery) -> Result<Tracking> {
     // Get url content.
     let url: String = merchant_product.url.as_ref().unwrap().to_owned();
     // Merchant can use different scraping method.
-    let scraping_method = merchant_product.merchant.scraping_method.unwrap().to_owned();
-    
+    let scraping_method = merchant_product
+        .merchant
+        .scraping_method
+        .unwrap()
+        .to_owned();
+
     if scraping_method.to_string() == ScrapingMethod::Library.to_string() {
         handle_call_response(
-            merchant_product, 
-            call_url(&url).await.expect("Call url via library method.")
-        ).await
+            merchant_product,
+            call_url(&url).await.expect("Call url via library method."),
+        )
+        .await
     } else if scraping_method.to_string() == ScrapingMethod::Browser.to_string() {
         handle_call_response(
-            merchant_product, 
-            call_url_browser(&url).await.expect("Call url via browser method.")
-        ).await
+            merchant_product,
+            call_url_browser(&url)
+                .await
+                .expect("Call url via browser method."),
+        )
+        .await
     } else {
         Err(anyhow!("Unknow call url scraping method."))
     }
 }
 
-async fn handle_call_response(merchant_product: MerchantProduct, call_response: CallResponse) -> Result<Tracking> {
+async fn handle_call_response(
+    merchant_product: MerchantProduct,
+    call_response: CallResponse,
+) -> Result<Tracking> {
     let url = merchant_product.url.unwrap();
 
-    if call_response.is_success() {    
+    if call_response.is_success() {
         // Get scraping elements by merchant
         let scaping_elements = merchant_product
             .merchant
@@ -78,11 +89,13 @@ async fn handle_call_response(merchant_product: MerchantProduct, call_response: 
         };
 
         if parse_result.title.is_empty() {
-            Err(anyhow!("Handle message error for : {:?}, title is empty.", url))
+            Err(anyhow!(
+                "Handle message error for : {:?}, title is empty.",
+                url
+            ))
         } else {
-           Ok(tracking)
+            Ok(tracking)
         }
-        
     } else {
         Err(anyhow!("Handle message error for : {:?}", url))
     }
@@ -121,12 +134,12 @@ async fn call_url_browser(url: &String) -> Result<CallResponse> {
 
     let mut status: i32 = 999;
     let mut body: String = "".to_string();
-    
+
     match response {
         Some(response) => {
             status = response.status().expect("Response status");
             body = response.text().await.expect("Response content");
-        },
+        }
         None => println!("{} call failed!", url),
     }
 

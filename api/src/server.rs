@@ -1,15 +1,14 @@
-use actix_web::{http::header, web, App, HttpServer};
-use actix_web::dev::Server;
 use actix_cors::Cors;
-use sqlx::PgPool;
-use log::info;
+use actix_web::dev::Server;
+use actix_web::{http::header, web, App, HttpServer};
 use dotenv::dotenv;
+use log::info;
+use sqlx::PgPool;
 use std::env;
 
 use crate::default::health_check;
 use crate::product;
 use crate::tracking;
-
 
 pub fn run_server(pool: PgPool) -> Result<Server, std::io::Error> {
     dotenv().ok();
@@ -17,8 +16,8 @@ pub fn run_server(pool: PgPool) -> Result<Server, std::io::Error> {
     let allowed_cors = env::var("ALLOWED_CORS_ORIGIN")
         .expect("ALLOWED_CORS_ORIGIN address is not set in .env file");
 
-    let server_addr = env::var("API_SERVER_DSN")
-        .expect("API_SERVER_DSN address is not set in .env file");
+    let server_addr =
+        env::var("API_SERVER_DSN").expect("API_SERVER_DSN address is not set in .env file");
 
     // Let's start HTTP server
     let server = HttpServer::new(move || {
@@ -35,7 +34,7 @@ pub fn run_server(pool: PgPool) -> Result<Server, std::io::Error> {
             .app_data(web::Data::new(pool.clone()))
             .service(web::scope("/api/tracking").configure(tracking::init))
             .service(web::scope("/api/product").configure(product::init))
-            .route("/health_check",  web::get().to(health_check))
+            .route("/health_check", web::get().to(health_check))
     })
     .bind(server_addr.as_str())?
     .run();

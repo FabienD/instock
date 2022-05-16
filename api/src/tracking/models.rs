@@ -1,19 +1,18 @@
 use actix_web::body::BoxBody;
 use actix_web::{HttpRequest, HttpResponse, Responder};
 use anyhow::Result;
+use chrono::serde::ts_seconds;
+use chrono::{DateTime, Utc};
 use serde::Serialize;
+use sqlx::types::Uuid;
 use sqlx::FromRow;
 use sqlx::PgPool;
-use sqlx::types::Uuid;
-use chrono::{DateTime, Utc};
-use chrono::serde::ts_seconds;
-
 
 #[derive(Debug, FromRow, Serialize)]
 pub struct Tracking {
     product_id: Uuid,
     product_name: String,
-    links: Vec<TrackingLink>
+    links: Vec<TrackingLink>,
 }
 
 #[derive(Debug, FromRow, Serialize, sqlx::Type)]
@@ -34,9 +33,7 @@ impl Responder for Tracking {
 }
 
 impl Tracking {
-    pub async fn get(
-        pool: &PgPool
-    ) -> Result<Vec<Tracking>> {
+    pub async fn get(pool: &PgPool) -> Result<Vec<Tracking>> {
         let products = sqlx::query_as!(
             Tracking,
             r#"
