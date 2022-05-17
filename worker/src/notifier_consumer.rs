@@ -54,7 +54,7 @@ fn main() {
 
         while let Some(delivery) = consumer.next().await {
             if let Ok(delivery) = delivery {
-                // Scraping product
+                // Notify user by product
                 handle_message(&delivery, &pool).await;
 
                 delivery

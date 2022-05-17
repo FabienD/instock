@@ -50,7 +50,7 @@ fn main() {
                 for link in product.links {
                     // Push product_id in notifier queue when available
                     if link.is_in_stock {
-                        let payload = serde_json::to_string(&product.product_id).unwrap();
+                        let payload = &product.product_id.to_hyphenated().to_string();
                         channel
                             .basic_publish(
                                 "",

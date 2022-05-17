@@ -45,7 +45,7 @@ fn main() {
 
         let mut consumer = channel
             .basic_consume(
-                "instock",
+                "scrap",
                 "instock_consumer",
                 BasicConsumeOptions::default(),
                 FieldTable::default(),

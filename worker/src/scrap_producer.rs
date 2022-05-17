@@ -25,7 +25,7 @@ fn main() {
 
         channel
             .queue_declare(
-                "instock",
+                "scrap",
                 QueueDeclareOptions::default(),
                 FieldTable::default(),
             )
