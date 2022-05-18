@@ -1,12 +1,19 @@
 use actix_web::body::BoxBody;
-use actix_web::{HttpRequest, HttpResponse, Responder};
+use actix_web::{web, HttpRequest, HttpResponse, Responder};
 use anyhow::Result;
 use chrono::serde::ts_seconds;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
+use serde::Deserialize;
 use sqlx::types::Uuid;
 use sqlx::FromRow;
 use sqlx::PgPool;
+
+
+#[derive(Debug, Deserialize)]
+pub struct Filter {
+    pub only_positive: Option<String>,
+}
 
 #[derive(Debug, FromRow, Serialize)]
 pub struct Tracking {
@@ -33,46 +40,56 @@ impl Responder for Tracking {
 }
 
 impl Tracking {
-    pub async fn get(pool: &PgPool) -> Result<Vec<Tracking>> {
-        let products = sqlx::query_as!(
-            Tracking,
-            r#"
-            WITH last_tracking AS (
-                SELECT 
-                    DISTINCT ON (t.merchant_product_id) t.merchant_product_id, 
-                    t.is_in_stock, 
-                    t.tracked_at
-                FROM instock.tracking AS t
-                ORDER BY t.merchant_product_id, t.tracked_at DESC
-            ), tracked_products AS (
-                SELECT
-                    p.id as product_id,
-                    p.name as product_name,
-                    m.name as merchant,
-                    mp.url as product_merchant_url,
-                    lt.is_in_stock, 
-                    lt.tracked_at
-                FROM last_tracking AS lt
-                    JOIN instock.merchant_product AS mp ON mp.id = lt.merchant_product_id
-                    JOIN instock.product AS p ON p.id = mp.product_id
-                    JOIN instock.merchant AS m ON m.id = mp.merchant_id
-            )
+    pub async fn get_last(filter: &web::Query<Filter>, pool: &PgPool) -> Result<()> {
+        
+        let mut sql_filter = "";
+        let mut only_positive: bool = false;
+        
+        match filter.only_positive.to_owned() {
+            Some(f) => {
+                if matches!(f.as_str(), "true"|"t"|"1") {
+                    sql_filter = "t.is_in_stock";
+                }
+            },
+            _ => {},
+        }
+        
+        let query = r#"WITH last_tracking AS (
             SELECT 
-                tp.product_id,
-                tp.product_name,
-                array_agg((
-                    tp.product_merchant_url,
-                    tp.merchant,
-                    tp.is_in_stock,
-                    tp.tracked_at
-                )) as "links!: Vec<TrackingLink>"
-            FROM tracked_products AS tp 
-            GROUP BY tp.product_id, tp.product_name
-            "#
+                DISTINCT ON (t.merchant_product_id) t.merchant_product_id, 
+                t.is_in_stock, 
+                t.tracked_at
+            FROM instock.tracking AS t
+            WHERE {sql_filter}
+            ORDER BY t.merchant_product_id, t.tracked_at DESC
+        ), tracked_products AS (
+            SELECT
+                p.id as product_id,
+                p.name as product_name,
+                m.name as merchant,
+                mp.url as product_merchant_url,
+                lt.is_in_stock, 
+                lt.tracked_at
+            FROM last_tracking AS lt
+                JOIN instock.merchant_product AS mp ON mp.id = lt.merchant_product_id
+                JOIN instock.product AS p ON p.id = mp.product_id
+                JOIN instock.merchant AS m ON m.id = mp.merchant_id
         )
-        .fetch_all(pool)
-        .await?;
+        SELECT 
+            tp.product_id,
+            tp.product_name,
+            array_agg((
+                tp.product_merchant_url,
+                tp.merchant,
+                tp.is_in_stock,
+                tp.tracked_at
+            )) as "links!: Vec<TrackingLink>" 
+        FROM tracked_products AS tp 
+        GROUP BY tp.product_id, tp.product_name
+        "#;
+        
+        
 
-        Ok(products)
+        Ok(())
     }
 }
