@@ -51,7 +51,7 @@ fn main() {
             channel
                 .basic_publish(
                     "",
-                    "instock",
+                    "scrap",
                     BasicPublishOptions::default(),
                     str::as_bytes(&payload),
                     BasicProperties::default(),

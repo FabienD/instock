@@ -1,21 +1,25 @@
 use actix_web::body::BoxBody;
-use actix_web::{HttpRequest, HttpResponse, Responder};
+use actix_web::{web, HttpRequest, HttpResponse, Responder};
 use anyhow::Result;
 use chrono::serde::ts_seconds;
 use chrono::{DateTime, Utc};
-use serde::Serialize;
-use sqlx::types::Uuid;
-use sqlx::FromRow;
-use sqlx::PgPool;
+use serde::{Serialize, Deserialize};
+use sqlx::{types::Uuid, PgPool, FromRow};
 
-#[derive(Debug, FromRow, Serialize)]
+
+#[derive(Debug, Deserialize)]
+pub struct Filter {
+    pub only_positive: Option<String>,
+}
+
+#[derive(Debug, Serialize, FromRow)]
 pub struct Tracking {
     product_id: Uuid,
     product_name: String,
-    links: Vec<TrackingLink>,
+    links: Vec<TrackingLink>
 }
 
-#[derive(Debug, FromRow, Serialize, sqlx::Type)]
+#[derive(Debug, Serialize, sqlx::Type, FromRow)]
 pub struct TrackingLink {
     merchant_product_url: String,
     merchant: String,
@@ -33,16 +37,29 @@ impl Responder for Tracking {
 }
 
 impl Tracking {
-    pub async fn get(pool: &PgPool) -> Result<Vec<Tracking>> {
+    pub async fn get_last(filter: &web::Query<Filter>, pool: &PgPool) -> Result<Vec<Tracking>> {
+        
+        let mut sql_filter = vec![true, false];
+                
+        match filter.only_positive.to_owned() {
+            Some(f) => {
+                if matches!(f.as_str(), "true"|"t"|"1") {
+                    sql_filter = vec![true];
+                }
+            },
+            _ => {},
+        }
+        
+        
         let products = sqlx::query_as!(
             Tracking,
-            r#"
-            WITH last_tracking AS (
+            r#"WITH last_tracking AS (
                 SELECT 
                     DISTINCT ON (t.merchant_product_id) t.merchant_product_id, 
                     t.is_in_stock, 
                     t.tracked_at
                 FROM instock.tracking AS t
+                WHERE t.is_in_stock = ANY($1)
                 ORDER BY t.merchant_product_id, t.tracked_at DESC
             ), tracked_products AS (
                 SELECT
@@ -68,7 +85,8 @@ impl Tracking {
                 )) as "links!: Vec<TrackingLink>"
             FROM tracked_products AS tp 
             GROUP BY tp.product_id, tp.product_name
-            "#
+            "#,
+            &sql_filter
         )
         .fetch_all(pool)
         .await?;

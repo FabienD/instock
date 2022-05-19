@@ -16,6 +16,7 @@ pub use crate::config::*;
 pub use crate::server::run_server;
 
 #[tokio::main]
+#[allow(unused_must_use)]
 async fn main() -> Result<()> {
     dotenv().ok();
 
