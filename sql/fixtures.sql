@@ -43,7 +43,15 @@ VALUES
     ('0d32244b-70d4-4bcb-b43a-e0bdf4cdb13e', 'https://www.boulanger.com/ref/1147567', true, '1b87425a-4eb3-4e18-a493-29a3517ae3ca','d695d36d-dd42-42da-8d18-7a96ac87fdaf'),
     ('cac793ee-29c6-47e0-9f2a-fc3666c00bf6', 'https://www.boulanger.com/ref/1147568', true, '1b87425a-4eb3-4e18-a493-29a3517ae3ca','1b9398b1-f4f1-4b8f-b045-47d92e53127c'),
     ('403bfcfa-6b16-44ac-86a4-f74fbee6013b', 'https://www.cdiscount.com/jeux-pc-video-console/ps5/console-ps5-sony-ps5/f-10350-son3665540797413.html', false, 'ed0638dc-0a8e-42f2-be59-a1766feefb17', 'd695d36d-dd42-42da-8d18-7a96ac87fdaf'),
-    ('6545da1b-9de4-4697-918c-545731b9ed86', 'https://www.cdiscount.com/jeux-pc-video-console/ps5/console-sony-ps5-digital-edition-playstation-5-8/f-1035001-son4948872415002.html', false, 'ed0638dc-0a8e-42f2-be59-a1766feefb17', '1b9398b1-f4f1-4b8f-b045-47d92e53127c')
+    ('6545da1b-9de4-4697-918c-545731b9ed86', 'https://www.cdiscount.com/jeux-pc-video-console/ps5/console-sony-ps5-digital-edition-playstation-5-8/f-1035001-son4948872415002.html', false, 'ed0638dc-0a8e-42f2-be59-a1766feefb17', '1b9398b1-f4f1-4b8f-b045-47d92e53127c'),
+    ('1aa6a031-60a3-4404-8b1c-f338439aa348', 'https://www.amazon.de/dp/B08H93ZRK9', true, 'b81da46a-be47-4049-b033-edc4ac67f8cf', 'd695d36d-dd42-42da-8d18-7a96ac87fdaf'),
+    ('525ac84a-04db-4737-aae3-61984fc0981b', 'https://www.amazon.de/-/en/191088/dp/B08H98GVK8', true, 'b81da46a-be47-4049-b033-edc4ac67f8cf', '1b9398b1-f4f1-4b8f-b045-47d92e53127c'),
+    ('e322b725-d90c-43be-983c-c9ef376b361d', 'https://www.amazon.es/Sony-PlayStation-Consola-5/dp/B08H93ZRK9', true, '6f590e2a-2d7a-4084-a500-e91f8b8a38e8', 'd695d36d-dd42-42da-8d18-7a96ac87fdaf'),
+    ('002cb0df-33ba-4a0d-a181-c18a037d785f', 'https://www.amazon.es/Sony-PlayStation-Consola-5-Digital/dp/B08H98GVK8', true, '6f590e2a-2d7a-4084-a500-e91f8b8a38e8', '1b9398b1-f4f1-4b8f-b045-47d92e53127c'),
+    ('c1d9e3da-d385-4c5e-9b8c-cbbb64f34681', 'https://www.amazon.it/Playstation-Sony-PlayStation-5/dp/B08KKJ37F7', true, 'ef4381db-8140-4dfd-9ac0-4cc68188af88', 'd695d36d-dd42-42da-8d18-7a96ac87fdaf'),
+    ('3e950554-5fbe-4393-bf03-14f25813f2c8', 'https://www.amazon.it/Sony-PlayStation-5-Digital-Edition/dp/B08KJF2D25', true, 'ef4381db-8140-4dfd-9ac0-4cc68188af88', '1b9398b1-f4f1-4b8f-b045-47d92e53127c'),
+    ('7677cc3c-1a3d-412c-bf01-afccb51b0830', 'https://www.amazon.co.uk/PlayStation-9395003-5-Console/dp/B08H95Y452', true, 'bf9b3fad-dbf4-4135-bdc5-1f88898acead', 'd695d36d-dd42-42da-8d18-7a96ac87fdaf'),
+    ('941c5c71-f53d-4c75-ab93-875960a45e99', 'https://www.amazon.co.uk/PlayStation-5-Digital-Edition-Console/dp/B08H97NYGP', true, 'bf9b3fad-dbf4-4135-bdc5-1f88898acead', '1b9398b1-f4f1-4b8f-b045-47d92e53127c')
 ;
 
 INSERT INTO  instock.user (id, email, is_enabled) 
