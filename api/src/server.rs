@@ -16,8 +16,9 @@ pub fn run_server(pool: PgPool) -> Result<Server, std::io::Error> {
     let allowed_cors = env::var("ALLOWED_CORS_ORIGIN")
         .expect("ALLOWED_CORS_ORIGIN address is not set in .env file");
 
-    let server_addr =
-        env::var("API_SERVER_DSN").expect("API_SERVER_DSN address is not set in .env file");
+    let api_host = env::var("API_HOST").expect("API_HOST is not set in .env file");
+    let api_port = env::var("API_PORT").expect("API_PORT is not set in .env file");
+    let server_addr = format!("{api_host}:{api_port}");
 
     // Let's start HTTP server
     let server = HttpServer::new(move || {

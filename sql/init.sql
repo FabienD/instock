@@ -61,6 +61,7 @@ ADD CONSTRAINT merchant_product_product_id_fk
 CREATE TABLE IF NOT EXISTS  instock.tracking (
     merchant_product_id UUID,
     is_in_stock BOOLEAN NOT NULL DEFAULT false,
+    price VARCHAR(64) DEFAULT NULL,
     tracked_at TIMESTAMP WITH TIME ZONE,
     PRIMARY KEY(merchant_product_id, tracked_at)
 );

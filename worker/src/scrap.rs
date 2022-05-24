@@ -27,6 +27,7 @@ impl CallResponse {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ParseProductInfo {
     pub title: String,
+    pub price: String,
     pub in_stock: bool,
 }
 
@@ -77,14 +78,16 @@ async fn handle_call_response(
 
         let title = scaping_elements.title.to_owned();
         let cart = scaping_elements.cart.to_owned();
+        let price = scaping_elements.price.to_owned();
 
         // Parse response body
-        let parse_result = parse_body(&call_response.body, &title, &cart)
+        let parse_result = parse_body(&call_response.body, &title, &cart, &price)
             .await
             .expect("Parsing result");
 
         let tracking = Tracking {
             product_id: merchant_product.id.unwrap(),
+            price: parse_result.price,
             is_in_stock: parse_result.in_stock,
         };
 
@@ -152,34 +155,44 @@ async fn call_url_browser(url: &String) -> Result<CallResponse> {
     Ok(call_reponse)
 }
 
-async fn parse_body(body: &str, title: &str, cart: &str) -> Result<ParseProductInfo> {
+async fn parse_body(body: &str, title: &str, cart: &str, price: &str) -> Result<ParseProductInfo> {
     // Parsing HTML
     let document = Html::parse_document(body);
     // HTML Elements
     let title_element = Selector::parse(title).unwrap();
     let add_to_cart_element = Selector::parse(cart).unwrap();
+    let price_element = Selector::parse(price).unwrap();
+
     // Element values
     let has_cart_button = document.select(&add_to_cart_element).count();
     let mut title: String = String::from("");
+    let mut price: String = String::from("");
 
     if document.select(&title_element).count() == 1 {
         let title_node = document.select(&title_element).next().unwrap();
         title = title_node.inner_html();
-        title = clean_title(&title).await.expect("Clean title");
+        title = clean_element(&title).await.expect("Clean title");
+    }
+
+    if has_cart_button == 1 && document.select(&price_element).count() > 0 {
+        let price_node = document.select(&price_element).next().unwrap();
+        price = price_node.inner_html();
+        price = clean_element(&price).await.expect("Clean price");
     }
 
     let scrap_product_info = ParseProductInfo {
         title,
         in_stock: has_cart_button == 1,
+        price,
     };
 
     Ok(scrap_product_info)
 }
 
-async fn clean_title(title: &str) -> Result<String> {
-    let mut title = strip::strip_tags(title.trim());
+async fn clean_element(element: &str) -> Result<String> {
+    let mut element = strip::strip_tags(element.trim());
     let re = Regex::new(r"[\t|\n|\r]+").unwrap();
-    title = re.replace_all(title.as_str(), " ").to_string();
+    element = re.replace_all(element.as_str(), " ").to_string();
 
-    Ok(title)
+    Ok(element)
 }

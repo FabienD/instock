@@ -3,9 +3,8 @@ use actix_web::{web, HttpRequest, HttpResponse, Responder};
 use anyhow::Result;
 use chrono::serde::ts_seconds;
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
-use sqlx::{types::Uuid, PgPool, FromRow};
-
+use serde::{Deserialize, Serialize};
+use sqlx::{types::Uuid, FromRow, PgPool};
 
 #[derive(Debug, Deserialize)]
 pub struct Filter {
@@ -16,13 +15,14 @@ pub struct Filter {
 pub struct Tracking {
     product_id: Uuid,
     product_name: String,
-    links: Vec<TrackingLink>
+    links: Vec<TrackingLink>,
 }
 
 #[derive(Debug, Serialize, sqlx::Type, FromRow)]
 pub struct TrackingLink {
     merchant_product_url: String,
     merchant: String,
+    price: String,
     is_in_stock: bool,
     #[serde(with = "ts_seconds")]
     tracked_at: DateTime<Utc>,
@@ -38,24 +38,23 @@ impl Responder for Tracking {
 
 impl Tracking {
     pub async fn get_last(filter: &web::Query<Filter>, pool: &PgPool) -> Result<Vec<Tracking>> {
-        
         let mut sql_filter = vec![true, false];
-                
+
         match filter.only_positive.to_owned() {
             Some(f) => {
-                if matches!(f.as_str(), "true"|"t"|"1") {
+                if matches!(f.as_str(), "true" | "t" | "1") {
                     sql_filter = vec![true];
                 }
-            },
-            _ => {},
+            }
+            _ => {}
         }
-        
-        
+
         let products = sqlx::query_as!(
             Tracking,
             r#"WITH last_tracking AS (
                 SELECT 
-                    DISTINCT ON (t.merchant_product_id) t.merchant_product_id, 
+                    DISTINCT ON (t.merchant_product_id) t.merchant_product_id,
+                    t.price,
                     t.is_in_stock, 
                     t.tracked_at
                 FROM instock.tracking AS t
@@ -67,6 +66,7 @@ impl Tracking {
                     p.name as product_name,
                     m.name as merchant,
                     mp.url as product_merchant_url,
+                    lt.price,
                     lt.is_in_stock, 
                     lt.tracked_at
                 FROM last_tracking AS lt
@@ -80,6 +80,7 @@ impl Tracking {
                 array_agg((
                     tp.product_merchant_url,
                     tp.merchant,
+                    tp.price,
                     tp.is_in_stock,
                     tp.tracked_at
                 )) as "links!: Vec<TrackingLink>"

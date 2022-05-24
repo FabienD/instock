@@ -27,6 +27,7 @@ impl fmt::Display for ScrapingMethod {
 pub struct ScrapingElements {
     pub title: String,
     pub cart: String,
+    pub price: String,
 }
 
 #[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
@@ -76,8 +77,10 @@ impl MerchantProduct {
     }
 }
 
+#[derive(Debug)]
 pub struct Tracking {
     pub product_id: Uuid,
+    pub price: String,
     pub is_in_stock: bool,
 }
 
@@ -85,13 +88,14 @@ impl Tracking {
     pub async fn save(&self, pool: &PgPool) -> Result<(), Box<dyn std::error::Error>> {
         let tracking = sqlx::query(
             "
-            INSERT INTO instock.tracking (merchant_product_id, is_in_stock, tracked_at) VALUES (
-                $1, $2, now()
+            INSERT INTO instock.tracking (merchant_product_id, price, is_in_stock, tracked_at) VALUES (
+                $1, $2, $3, now()
             )
             RETURNING merchant_product_id
             ",
         )
         .bind(self.product_id)
+        .bind(self.price.to_owned())
         .bind(self.is_in_stock)
         .execute(pool)
         .await;

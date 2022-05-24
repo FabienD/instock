@@ -39,3 +39,4 @@ rand = "0.8"
 regex = "1.5"
 voca_rs = "1.14"
 playwright = "0.0.19"
+lettre = { version = "0.10.0-rc.6", default-features = false, features = ["smtp-transport", "async-std1", "async-std1-rustls-tls", "hostname", "builder"] }

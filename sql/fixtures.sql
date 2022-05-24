@@ -1,14 +1,14 @@
 INSERT INTO  instock.merchant (id, name, scraping_elements) 
 VALUES
-    ('8ade4ef2-a946-4791-84c5-326362e00bfb', 'Amazon FR', '{"title": "#productTitle", "cart": "#add-to-cart-button"}'),
-    ('b81da46a-be47-4049-b033-edc4ac67f8cf', 'Amazon DE', '{"title": "#productTitle", "cart": "#add-to-cart-button"}'),
-    ('ef4381db-8140-4dfd-9ac0-4cc68188af88', 'Amazon IT', '{"title": "#productTitle", "cart": "#add-to-cart-button"}'),
-    ('6f590e2a-2d7a-4084-a500-e91f8b8a38e8', 'Amazon ES', '{"title": "#productTitle", "cart": "#add-to-cart-button"}'),
-    ('bf9b3fad-dbf4-4135-bdc5-1f88898acead', 'Amazon UK', '{"title": "#productTitle", "cart": "#add-to-cart-button"}'),
-    ('a49db0c9-c1d5-4fbd-877e-ce21df3b3e53', 'Fnac FR', '{"title": "f-productHeader-Title", "cart": "f-buyBox-buttons js-ProductBuy-add"}'),
-    ('4acdaed8-5764-4623-9789-1c787ab13a08', 'Micromania','{"title": "h1.pdp-product-name span", "cart": "button.add-to-cart-global"}'),
-    ('1b87425a-4eb3-4e18-a493-29a3517ae3ca', 'Boulanger', '{"title": "h1.product-title__main", "cart": "button.js-add-to-cart-popin"}'),
-    ('ed0638dc-0a8e-42f2-be59-a1766feefb17', 'CDiscount', '{"title": "h1.fpSOTitleName", "cart": "#fpSOTitleName"}')
+    ('8ade4ef2-a946-4791-84c5-326362e00bfb', 'Amazon FR', '{"title": "#productTitle", "cart": "#add-to-cart-button", "price": "#corePriceDisplay_desktop_feature_div .a-offscreen"}'),
+    ('b81da46a-be47-4049-b033-edc4ac67f8cf', 'Amazon DE', '{"title": "#productTitle", "cart": "#add-to-cart-button", "price": "#corePriceDisplay_desktop_feature_div .a-offscreen"}'),
+    ('ef4381db-8140-4dfd-9ac0-4cc68188af88', 'Amazon IT', '{"title": "#productTitle", "cart": "#add-to-cart-button", "price": "#corePriceDisplay_desktop_feature_div .a-offscreen"}'),
+    ('6f590e2a-2d7a-4084-a500-e91f8b8a38e8', 'Amazon ES', '{"title": "#productTitle", "cart": "#add-to-cart-button", "price": "#corePriceDisplay_desktop_feature_div .a-offscreen"}'),
+    ('bf9b3fad-dbf4-4135-bdc5-1f88898acead', 'Amazon UK', '{"title": "#productTitle", "cart": "#add-to-cart-button", "price": "#corePriceDisplay_desktop_feature_div .a-offscreen"}'),
+    ('a49db0c9-c1d5-4fbd-877e-ce21df3b3e53', 'Fnac FR', '{"title": ".f-productHeader-Title", "cart": ".f-buyBox-buttons .js-ProductBuy-add", "price": ".f-faPriceBox__price"}'),
+    ('4acdaed8-5764-4623-9789-1c787ab13a08', 'Micromania','{"title": "h1.pdp-product-name span", "cart": "button.add-to-cart-global", "price": ".product-price.sales.value"}'),
+    ('1b87425a-4eb3-4e18-a493-29a3517ae3ca', 'Boulanger', '{"title": "h1.product-title__main", "cart": "button.js-add-to-cart-popin", "price": ".price.price__amount"}'),
+    ('ed0638dc-0a8e-42f2-be59-a1766feefb17', 'CDiscount', '{"title": "h1.fpSOTitleName", "cart": "#fpSOTitleName", "price": "#fpBlocPrice .price"}')
 ;
 
 INSERT INTO  instock.brand (id, name) 
