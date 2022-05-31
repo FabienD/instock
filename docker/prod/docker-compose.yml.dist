@@ -1,0 +1,84 @@
+# Services
+services:
+
+  reverse-proxy:
+    container_name: traefik
+    image: traefik:2.6
+    command:
+      --api.dashboard=true
+      --providers.docker=true
+      --providers.docker.useBindPortIP=true
+      --providers.docker.exposedbydefault=false
+      --entrypoints.websecure.address=:443
+      --entrypoints.web.address=:80
+      --certificatesresolvers.letsencryptresolver.acme.httpchallenge=true
+      --certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web
+      # Use a valid email
+      --certificatesresolvers.letsencryptresolver.acme.email=user@example.com
+      --certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.js
+      --entrypoints.web.http.redirections.entryPoint.to=websecure
+      --entrypoints.web.http.redirections.entryPoint.scheme=https
+      #--pilot.token="xxxxxxxxxxx"
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      # Chosse a domain for traefik dashboard
+      - "traefik.http.routers.dashboard.rule=Host(`dashboard.domain.com`)"
+      - "traefik.http.routers.dashboard.service=api@internal"
+      - "traefik.http.routers.dashboard.entrypoints=websecure"
+      - "traefik.http.routers.dashboard.tls.certresolver=letsencryptresolver"
+      - "traefik.http.routers.dashboard.middlewares=traefik-auth"
+      # Change user password using htpasswd
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:xxxxxxxxx"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - traefik-certificates:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+
+  api:
+    container_name: instock-api
+    # Use api Dockerfile to build image
+    image: instock-api
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      # Chosse a domain for instock api
+      - "traefik.http.routers.instock-api.rule=Host(`api.domain.com`)"
+      - "traefik.http.routers.instock-api.entrypoints=websecure"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8088/health_check"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    ports:
+      - 8088
+    env_file:
+      - .env
+
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.10
+    environment:
+      RABBITMQ_DEFAULT_USER: instock
+      # Choose a password.
+      RABBITMQ_DEFAULT_PASS: xxxxxxxxx
+      RABBITMQ_DEFAULT_VHOST: instock
+    ports:
+      - 5672:5672
+      - 5671:5671
+    restart: always
+
+
+# Volumes
+volumes:
+  traefik-certificates:
+
+# Network
+networks:
+  instock:
+    external: true
