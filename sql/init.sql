@@ -104,3 +104,11 @@ ADD CONSTRAINT user_tracking_product_id_fk
     FOREIGN KEY (product_id)
     REFERENCES  instock.product(id)
     ON DELETE CASCADE;
+
+
+-- Create Timescale DB  hyperscale table
+
+SELECT create_hypertable('instock.tracking','tracked_at');
+
+CREATE INDEX ix_product_tracked_at ON instock.tracking (merchant_product_id, tracked_at DESC);
+

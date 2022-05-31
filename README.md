@@ -1,8 +1,8 @@
 
 # A litte side project to learn
 
- * Rust API with actix,
- * Rust workers (RabbitMQ consumer & producer),
+ * Rust API with [Actix](https://actix.rs/), [Sqlx](https://github.com/launchbadge/sqlx), and more.
+ * Rust workers (RabbitMQ consumer & producer, via [Lapin](https://docs.rs/lapin/latest/lapin/)),
  * React + Typescript,
 
 The goal of this side project is :

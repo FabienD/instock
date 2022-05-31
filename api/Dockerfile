@@ -14,4 +14,6 @@ RUN apt-get update -y \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /app/target/release/instock-api instock-api
 
-ENTRYPOINT ["./api"]
+EXPOSE 8088
+
+ENTRYPOINT ["./instock-api"]
