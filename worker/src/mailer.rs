@@ -19,7 +19,7 @@ pub fn init_mailer(
         mailer = AsyncSmtpTransport::<AsyncStd1Executor>::builder_dangerous(&host)
             .port(port)
             .credentials(credentials)
-            .tls(Tls::Wrapper(tls_parameters));
+            .tls(Tls::Required(tls_parameters));
 
     // For local SMTP, not secure, no tls.
     } else {
