@@ -1,6 +1,6 @@
 use actix_cors::Cors;
 use actix_web::dev::Server;
-use actix_web::{http::header, web, App, HttpServer};
+use actix_web::{http::header, guard, web, App, HttpServer};
 use dotenv::dotenv;
 use log::info;
 use sqlx::PgPool;
@@ -35,7 +35,11 @@ pub fn run_server(pool: PgPool) -> Result<Server, std::io::Error> {
             .app_data(web::Data::new(pool.clone()))
             .service(web::scope("/api/tracking").configure(tracking::init))
             .service(web::scope("/api/product").configure(product::init))
-            .route("/health_check", web::get().to(health_check))
+            .route("/health_check", 
+                web::route()
+                        .guard(guard::Any(guard::Get()).or(guard::Head()))
+                        .to(health_check),
+            )
     })
     .bind(server_addr.as_str())?
     .run();
