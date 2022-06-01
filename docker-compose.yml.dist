@@ -3,7 +3,7 @@ services:
 
   reverse-proxy:
     container_name: traefik
-    image: traefik:2.6
+    image: traefik:2.7
     command:
       --api.dashboard=true
       --providers.docker=true
