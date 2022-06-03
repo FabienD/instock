@@ -17,6 +17,6 @@ module.exports = {
     utils: true,
     logs: true,
     rtl: false,
-    darkTheme: "cupcake",
+    darkTheme: "dracula",
   },
 }

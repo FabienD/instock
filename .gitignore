@@ -20,7 +20,9 @@ node_modules/
 .env.local
 .env.development
 .env.development.local
+.env.test
 .env.test.local
+.env.production
 .env.production.local
 
 

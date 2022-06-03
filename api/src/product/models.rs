@@ -20,6 +20,7 @@ pub struct Product {
     brand: Brand,
     url: Option<String>,
     upc: Option<String>,
+    image: Option<String>,
 }
 
 impl Responder for Product {
@@ -40,6 +41,7 @@ impl Product {
                 p.description,
                 p.url,
                 p.upc,
+                p.image,
                 p.brand_id,
                 b.name as brand_name
             FROM instock.product AS p
@@ -56,6 +58,7 @@ impl Product {
             description: rec.description,
             url: rec.url,
             upc: rec.upc,
+            image: rec.image,
             brand: Brand {
                 id: rec.brand_id,
                 name: rec.brand_name,

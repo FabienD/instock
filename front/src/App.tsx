@@ -17,6 +17,7 @@ interface Product {
   brand: Brand,
   url: string,
   upc: string,
+  image: string,
   links: TrackingLink[]
 }
 
@@ -49,17 +50,20 @@ const getTrackings = async (endpoint: string) => {
 }
 
 const generateProductCard = (product: Product, key: number) => {
-  const { id, name, description, brand, url, upc, links } = product
+  const { id, name, description, image, links } = product
   
   return (
-    <li key={key} className='card basis-1/2 bg-base-100 shadow-xl'>
-      <div className='card-body' data-product-id={id}>
-        <h3 className='card-title'>{name}</h3>
-        <em>{brand.name} / {upc}</em>
-        <div>
-          {description}
+    <li key={key} className='xl:w-1/2 md:w-1/1 p-5'>
+      <div className='card bg-neutral shadow-xl'>
+        <figure className='bg-white'>
+          <img src={image} alt={name} className='p-5' />
+        </figure>
+        <div className='card-body' data-product-id={id}>
+          <h3 className='card-title'>{name}</h3>
+          <p>{description}</p>
+          <div className='divider'></div> 
+          <Links {...links}/>
         </div>
-        <Links {...links}/>
       </div>
     </li>
   )
@@ -71,13 +75,15 @@ const generateTrackingLink = (link: TrackingLink, key: number) => {
   const formatedDate = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium', timeStyle: 'short' }).format(date)
   
   return (
-    <li key={key}>
-      <a href={merchant_product_url} className={'inline-block link link-hover'} target="_blank">
-        <span className={'badge align-middle ' + (is_in_stock ? 'badge-primary':'badge-error') }>{is_in_stock}</span>
-        <h4 className='inline p-1'>{merchant}</h4>
-        <em className='p-1'>{price ? ' -> ' + price : ''}</em>
-      </a>  
-      <p className='ml-6 text-xs italic'>{formatedDate}</p>
+    <li key={key} className='p-2'>
+      <a href={merchant_product_url} className={'inline-block link link-hover grid grid-cols-2'} target="_blank">
+        <div className=''>
+          <span className={'badge align-middle ' + (is_in_stock ? 'badge-primary':'badge-error') }>{is_in_stock}</span>
+          <h4 className='inline p-1 ml-2'>{merchant}</h4>
+          <em className='p-1'>{price ? ' -> ' + price : ''}</em>
+        </div>
+        <span className='text-xs text-right italic'>{formatedDate}</span>
+      </a>
     </li>
   )
 }
@@ -87,7 +93,9 @@ const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
   
   const fetchData = async () => {
+    // @ts-ignore
     const products = await getProducts(import.meta.env.VITE_API_PRODUCT)
+    // @ts-ignore
     const trackings = await getTrackings(import.meta.env.VITE_API_TRACKING)
 
     products!.map((product) => {
@@ -119,7 +127,7 @@ const Products = (items: Product[]) => {
   const hasProducts = products.length > 0
   
   return (
-    <ul className="grid grid-cols-2 gap-4">
+    <ul className='flex flex-wrap items-stretch -m-5'>
       {hasProducts ? products!.map(generateProductCard) : null}
     </ul>
   )
@@ -129,7 +137,7 @@ const Links = (data: TrackingLink[]) => {
   const links = Object.values(data)
   const hasLinks = links.length > 0
   return (
-    <ul className="">
+    <ul className=''>
       {hasLinks ? links!.map(generateTrackingLink) : null}
     </ul>
   )
