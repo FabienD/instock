@@ -54,7 +54,7 @@ const generateProductCard = (product: Product, key: number) => {
   
   return (
     <li key={key} className='xl:w-1/2 md:w-1/1 p-5'>
-      <div className='card bg-neutral shadow-xl'>
+      <div className='card bg-base-300 shadow-xl'>
         <figure className='bg-white'>
           <img src={image} alt={name} className='p-5' />
         </figure>
