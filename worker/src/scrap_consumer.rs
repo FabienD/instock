@@ -19,6 +19,9 @@ fn main() {
     let rmq_dns = env::var("RABBITMQ_DSN").expect("RABBITMQ_DSN is not set in .env file");
     // Postgres
     let pg_dsn = env::var("DATABASE_URL").expect("DATABASE_URL is not set in .env file");
+    // Scraping pause
+    let scrap_min_pause_sec = env::var("SCRAP_MIN_PAUSE_SEC").unwrap_or("2".to_string());
+    let scrap_max_pause_sec = env::var("SCRAP_MAX_PAUSE_SEC").unwrap_or("10".to_string());
 
     async_global_executor::block_on(async {
         let conn = init_rmq(RmqConfig { dsn: rmq_dns })
@@ -64,7 +67,7 @@ fn main() {
                 };
 
                 // Wait a little before next message
-                let wait_ms = rand::thread_rng().gen_range(1500..3000);
+                let wait_ms = rand::thread_rng().gen_range((1000*scrap_min_pause_sec.parse::<u64>().unwrap())..(1000*scrap_max_pause_sec.parse::<u64>().unwrap()));
                 thread::sleep(Duration::from_millis(wait_ms));
 
                 delivery
