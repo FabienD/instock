@@ -32,8 +32,8 @@
       ]
     }
   },
-  "9539f40e78d866b42b51733c769c47ac2e5530bcc43c50bed4bbdb485fa20a83": {
-    "query": "\n            SELECT\n                p.id,\n                p.name,\n                p.description,\n                p.url,\n                p.upc,\n                p.brand_id,\n                b.name as brand_name\n            FROM instock.product AS p\n                JOIN instock.brand AS b ON b.id = p.brand_id\n            ORDER BY p.brand_id, p.id\n            ",
+  "6bca899e2e3a236e2585aacce47c11505742e628a4e0f1dd3f2bcf1c43c4e011": {
+    "query": "\n            SELECT\n                p.id,\n                p.name,\n                p.description,\n                p.url,\n                p.upc,\n                p.image,\n                p.brand_id,\n                b.name as brand_name\n            FROM instock.product AS p\n                JOIN instock.brand AS b ON b.id = p.brand_id\n            ORDER BY p.brand_id, p.id\n            ",
     "describe": {
       "columns": [
         {
@@ -63,11 +63,16 @@
         },
         {
           "ordinal": 5,
+          "name": "image",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 6,
           "name": "brand_id",
           "type_info": "Uuid"
         },
         {
-          "ordinal": 6,
+          "ordinal": 7,
           "name": "brand_name",
           "type_info": "Text"
         }
@@ -78,6 +83,7 @@
       "nullable": [
         false,
         false,
+        true,
         true,
         true,
         true,
