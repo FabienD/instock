@@ -4,7 +4,7 @@ import React, { useEffect } from 'react';
 const Header: React.FC = () => {
 
     return (
-       <div className="hero">
+       <header className="hero">
         <div className="hero-content text-center text-neutral-content-focus">
           <div className="max-w-md">
             
@@ -17,7 +17,7 @@ const Header: React.FC = () => {
             </p>
           </div>
         </div>
-      </div>
+      </header>
     )
 }
 
