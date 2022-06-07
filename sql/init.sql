@@ -112,3 +112,13 @@ SELECT create_hypertable('instock.tracking','tracked_at');
 
 CREATE INDEX ix_product_tracked_at ON instock.tracking (merchant_product_id, tracked_at DESC);
 
+-- Patch --
+
+ALTER TABLE IF EXISTS instock.merchant_product
+    ADD COLUMN affiiate_link "char";
+
+ALTER TABLE IF EXISTS instock.merchant_product
+    ADD CONSTRAINT merchant_product_affiliate_url_key UNIQUE (affiiate_link);
+
+ALTER TABLE IF EXISTS instock.user_tracking
+    ADD COLUMN max_price numeric(8, 2);
