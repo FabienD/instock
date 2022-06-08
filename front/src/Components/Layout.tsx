@@ -7,7 +7,7 @@ const Layout: React.FC = (): JSX.Element => {
   return (
     <>
       <Header />
-        <main>
+        <main className='max-w-5xl mr-auto ml-auto'>
         <Outlet />
         </main>
       <Footer />

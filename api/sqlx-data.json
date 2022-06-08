@@ -1,37 +1,5 @@
 {
   "db": "PostgreSQL",
-  "5c4f5d6d59b41419402309957e51489f324802f341e93c9bd656dd83967349f5": {
-    "query": "WITH last_tracking AS (\n                SELECT \n                    DISTINCT ON (t.merchant_product_id) t.merchant_product_id,\n                    t.price,\n                    t.is_in_stock, \n                    t.tracked_at\n                FROM instock.tracking AS t\n                WHERE t.is_in_stock = ANY($1)\n                ORDER BY t.merchant_product_id, t.tracked_at DESC\n            ), tracked_products AS (\n                SELECT\n                    p.id as product_id,\n                    p.name as product_name,\n                    m.name as merchant,\n                    mp.url as product_merchant_url,\n                    lt.price,\n                    lt.is_in_stock, \n                    lt.tracked_at\n                FROM last_tracking AS lt\n                    JOIN instock.merchant_product AS mp ON mp.id = lt.merchant_product_id\n                    JOIN instock.product AS p ON p.id = mp.product_id\n                    JOIN instock.merchant AS m ON m.id = mp.merchant_id\n            )\n            SELECT \n                tp.product_id,\n                tp.product_name,\n                array_agg((\n                    tp.product_merchant_url,\n                    tp.merchant,\n                    tp.price,\n                    tp.is_in_stock,\n                    tp.tracked_at\n                )) as \"links!: Vec<TrackingLink>\"\n            FROM tracked_products AS tp \n            GROUP BY tp.product_id, tp.product_name\n            ",
-    "describe": {
-      "columns": [
-        {
-          "ordinal": 0,
-          "name": "product_id",
-          "type_info": "Uuid"
-        },
-        {
-          "ordinal": 1,
-          "name": "product_name",
-          "type_info": "Text"
-        },
-        {
-          "ordinal": 2,
-          "name": "links!: Vec<TrackingLink>",
-          "type_info": "RecordArray"
-        }
-      ],
-      "parameters": {
-        "Left": [
-          "BoolArray"
-        ]
-      },
-      "nullable": [
-        false,
-        false,
-        null
-      ]
-    }
-  },
   "6bca899e2e3a236e2585aacce47c11505742e628a4e0f1dd3f2bcf1c43c4e011": {
     "query": "\n            SELECT\n                p.id,\n                p.name,\n                p.description,\n                p.url,\n                p.upc,\n                p.image,\n                p.brand_id,\n                b.name as brand_name\n            FROM instock.product AS p\n                JOIN instock.brand AS b ON b.id = p.brand_id\n            ORDER BY p.brand_id, p.id\n            ",
     "describe": {
@@ -89,6 +57,38 @@
         true,
         false,
         false
+      ]
+    }
+  },
+  "c4c2d2b88520e7b221f751167fe49f6e43d6fb5ca388052603df528929803bae": {
+    "query": "WITH last_tracking AS (\n                SELECT \n                    DISTINCT ON (t.merchant_product_id) t.merchant_product_id,\n                    t.price,\n                    t.is_in_stock, \n                    t.tracked_at\n                FROM instock.tracking AS t\n                WHERE t.is_in_stock = ANY($1)\n                ORDER BY t.merchant_product_id, t.tracked_at DESC\n            ), tracked_products AS (\n                SELECT\n                    p.id as product_id,\n                    p.name as product_name,\n                    m.name as merchant,\n                    COALESCE(mp.affiliate_url, mp.url) as product_merchant_url,\n                    lt.price,\n                    lt.is_in_stock, \n                    lt.tracked_at\n                FROM last_tracking AS lt\n                    JOIN instock.merchant_product AS mp ON mp.id = lt.merchant_product_id\n                    JOIN instock.product AS p ON p.id = mp.product_id\n                    JOIN instock.merchant AS m ON m.id = mp.merchant_id\n            )\n            SELECT \n                tp.product_id,\n                tp.product_name,\n                array_agg((\n                    tp.product_merchant_url,\n                    tp.merchant,\n                    tp.price,\n                    tp.is_in_stock,\n                    tp.tracked_at\n                )) as \"links!: Vec<TrackingLink>\"\n            FROM tracked_products AS tp \n            GROUP BY tp.product_id, tp.product_name\n            ",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "product_id",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "product_name",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "links!: Vec<TrackingLink>",
+          "type_info": "RecordArray"
+        }
+      ],
+      "parameters": {
+        "Left": [
+          "BoolArray"
+        ]
+      },
+      "nullable": [
+        false,
+        false,
+        null
       ]
     }
   }

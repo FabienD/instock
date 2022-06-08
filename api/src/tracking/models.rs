@@ -65,7 +65,7 @@ impl Tracking {
                     p.id as product_id,
                     p.name as product_name,
                     m.name as merchant,
-                    mp.url as product_merchant_url,
+                    COALESCE(mp.affiliate_url, mp.url) as product_merchant_url,
                     lt.price,
                     lt.is_in_stock, 
                     lt.tracked_at
