@@ -115,7 +115,7 @@ CREATE INDEX ix_product_tracked_at ON instock.tracking (merchant_product_id, tra
 -- Patch --
 
 ALTER TABLE IF EXISTS instock.merchant_product
-    ADD COLUMN affiliate_url "char";
+    ADD COLUMN affiliate_url text;
 
 ALTER TABLE IF EXISTS instock.merchant_product
     ADD CONSTRAINT merchant_product_affiliate_url_key UNIQUE (affiliate_url);
