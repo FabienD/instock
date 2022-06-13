@@ -2,7 +2,10 @@ use anyhow::Result;
 use lapin::message::Delivery;
 use lettre::{message::MultiPart, AsyncSmtpTransport, AsyncStd1Executor, AsyncTransport, Message};
 use sqlx::PgPool;
+use sqlx::types::BigDecimal;
 use voca_rs::strip;
+use std::str::FromStr;
+
 
 pub use crate::models::*;
 
@@ -36,6 +39,21 @@ async fn get_user_by_product_id(
     product: &TrackedProduct,
     pool: &PgPool,
 ) -> Result<Vec<Subscriber>> {
+    // Get the minimal tracked product price.
+    let max_price = "100_000.00";
+    let mut price = BigDecimal::from_str(&max_price).unwrap();
+
+    for product_link in &product.links {
+        // Clean scraped price
+        let product_price = clean_price(&product_link.price);
+        if  product_price <= price {
+            price = product_price;
+        }   
+    }
+
+    // One notification by day, when :
+    // -> tracked product price is under alert max price,
+    // -> max notification alerts is not reach
     let subscribers = sqlx::query_as!(
         Subscriber,
         r#"
@@ -47,8 +65,11 @@ async fn get_user_by_product_id(
         WHERE us.is_enabled
           AND ut.product_id = $1
           AND ut.alert_count < ut.alert_count_max
+          AND (ut.alerted_at IS NULL OR ut.alerted_at::date != now()::date)
+          AND (ut.max_price IS NULL OR ut.max_price >= $2)
         "#,
-        &product.product_id
+        &product.product_id,
+        &price
     )
     .fetch_all(pool)
     .await?;
@@ -124,7 +145,8 @@ async fn update_user_tracking(
     sqlx::query!(
         r#"
             UPDATE instock.user_tracking
-            SET alert_count = alert_count + 1
+            SET alert_count = alert_count + 1,
+                alerted_at = now()
             WHERE user_id = $1
               AND product_id = $2
         "#,
@@ -135,4 +157,15 @@ async fn update_user_tracking(
     .await?;
 
     Ok(())
+}
+
+fn clean_price(price: &String) -> BigDecimal {
+
+    let clean_price = price
+        .replace("€", "")
+        .replace("eur", "")
+        .replace("$", "")
+        .replace(",", ".");
+            
+    BigDecimal::from_str(clean_price.as_str()).unwrap()
 }
