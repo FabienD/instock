@@ -45,10 +45,14 @@ async fn get_user_by_product_id(
 
     for product_link in &product.links {
         // Clean scraped price
-        let product_price = clean_price(&product_link.price);
-        if  product_price <= price {
-            price = product_price;
-        }   
+        match clean_price(&product_link.price) {
+            Some(p) => {
+                if  p <= price {
+                    price = p;
+                }
+            }
+            None => continue,
+        }
     }
 
     // One notification by day, when :
@@ -159,13 +163,17 @@ async fn update_user_tracking(
     Ok(())
 }
 
-fn clean_price(price: &String) -> BigDecimal {
+fn clean_price(price: &String) -> Option<BigDecimal> {
 
-    let clean_price = price
+    if !price.is_empty() {
+        let clean_price = price
         .replace("€", "")
         .replace("eur", "")
         .replace("$", "")
         .replace(",", ".");
             
-    BigDecimal::from_str(clean_price.as_str()).unwrap()
+        return Some(BigDecimal::from_str(clean_price.as_str()).unwrap());
+    }
+
+    None
 }

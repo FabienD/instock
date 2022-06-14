@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS instock.merchant (
     id UUID PRIMARY KEY,
     name text NOT NULL,
     scraping_elements jsonb NOT NULL,
-    scraping_method instock.scraping_method NOT NULL DEFAULT('library')
+    scraping_method instock.scraping_method NOT NULL DEFAULT('browser')
 );
 
 
