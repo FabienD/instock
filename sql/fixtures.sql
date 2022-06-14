@@ -18,14 +18,14 @@ VALUES
     ('0cb7b153-0c39-4f54-a937-1b106791ae0d', 'Nintendo')
 ;
 
-INSERT INTO  instock.product (id, name, description, upc, brand_id) 
+INSERT INTO instock.product (id, name, description, brand_id, upc, url, image)
 VALUES
-    ('d695d36d-dd42-42da-8d18-7a96ac87fdaf', 'Sony PlayStation 5 Édition Standard', null, '808223051645', '6c939be8-e6dd-41ba-8559-b606c3973d42'),
-    ('1b9398b1-f4f1-4b8f-b045-47d92e53127c', 'Sony PlayStation 5 Édition Digital', null, '808223010987', '6c939be8-e6dd-41ba-8559-b606c3973d42'),
-    ('ac510747-9fc7-48bf-9d6d-44f155ef22cd', 'XBox serie X', null, '745808009755', 'a306182a-9d37-4f1b-a069-fd28e3004518'),
-    ('beb02920-4436-4d9b-bcae-e92db6fe6704', 'XBox serie S', null, '840262756396', 'a306182a-9d37-4f1b-a069-fd28e3004518'),
-    ('eb67e6d6-80d6-4568-9d0e-d440d19eeb6b', 'Nintendo Switch Oled Joy Blanc', null, '045496883386', '0cb7b153-0c39-4f54-a937-1b106791ae0d'),
-    ('335f0b53-29c0-4692-ba91-c034c58623d2', 'Nintendo Switch Oled Joy Bleu/Rouge', null, '045496883409', '0cb7b153-0c39-4f54-a937-1b106791ae0d')
+    ('1b9398b1-f4f1-4b8f-b045-47d92e53127c', 'Sony PlayStation 5 Édition Digital', 'The PlayStation 5 is a home video game console developed by Sony Interactive Entertainment. The Digital Edition lacks this drive, allowing it to serve as a lower-cost model for those who prefer to buy games through digital download.', '6c939be8-e6dd-41ba-8559-b606c3973d42', '808223010987', '\N', '/pictures/ps5_digital.jpg'),
+    ('335f0b53-29c0-4692-ba91-c034c58623d2', 'Nintendo Switch Oled Joy Bleu/Rouge', 'The Nintendo Switch is a video game console developed by Nintendo.  The console itself is a tablet that can either be docked for use as a home console or used as a portable device', '0cb7b153-0c39-4f54-a937-1b106791ae0d', '045496883409', '\N', '/pictures/switch_oled_neon.jpg'),
+    ('ac510747-9fc7-48bf-9d6d-44f155ef22cd', 'XBox serie X', 'The Xbox Series X and the Xbox Series S are home video game consoles developed by Microsoft.The Xbox Series X has higher-end hardware and supports higher display resolutions (up to 8K resolution), along with higher frame rates and real-time ray tracing; it also has a high-speed solid-state drive (SSD) to reduce loading times.', 'a306182a-9d37-4f1b-a069-fd28e3004518', '745808009755', '\N', '/pictures/xbox_x.jpg'),
+    ('beb02920-4436-4d9b-bcae-e92db6fe6704', 'XBox serie S', 'The Xbox Series X and the Xbox Series S are home video game consoles developed by Microsoft. The less expensive Xbox Series S uses the same CPU, but has a less powerful GPU, has less memory and internal storage, and lacks an optical drive.', 'a306182a-9d37-4f1b-a069-fd28e3004518', '840262756396', '\N', '/pictures/xbox_s.jpg'),
+    ('eb67e6d6-80d6-4568-9d0e-d440d19eeb6b', 'Nintendo Switch Oled Joy Blanc', 'The Nintendo Switch is a video game console developed by Nintendo.  The console itself is a tablet that can either be docked for use as a home console or used as a portable device', '0cb7b153-0c39-4f54-a937-1b106791ae0d', '045496883386', '\N', '/pictures/switch_oled_white.jpg'),
+    ('d695d36d-dd42-42da-8d18-7a96ac87fdaf', 'Sony PlayStation 5 Édition Standard', 'The PlayStation 5 is a home video game console developed by Sony Interactive Entertainment. The standard model includes an optical disc drive compatible with Ultra HD Blu-ray discs.', '6c939be8-e6dd-41ba-8559-b606c3973d42', '808223051645', '\N', '/pictures/ps5_standard.jpg')
 ;
 
 INSERT INTO  instock.merchant_product (id, url, tracked, merchant_id, product_id) 
