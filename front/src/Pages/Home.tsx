@@ -53,14 +53,14 @@ const generateProductCard = (product: Product, key: number) => {
   
   return (
     <li key={key} className='xl:w-1/2 md:w-1/1 p-5'>
-      <div className='card bg-base-300 shadow-xl'>
+      <div className='bg-base-300 shadow-xl'>
         <figure className='bg-white'>
           <img src={image} alt={name} className='p-5' />
         </figure>
-        <div className='card-body' data-product-id={id}>
-          <h3 className='card-title'>{name}</h3>
+        <div className='' data-product-id={id}>
+          <h3 className=''>{name}</h3>
           <p>{description}</p>
-          <div className='divider'></div> 
+          <div className=''></div> 
           <Links {...links}/>
         </div>
       </div>
