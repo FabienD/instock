@@ -144,6 +144,8 @@ async fn call_url_browser(url: &String, playwright: &Playwright) -> Result<CallR
         None => println!("{} call failed!", url),
     }
 
+    browser.close().await.expect("Close browser failed");
+
     let call_reponse = CallResponse {
         url: url.to_string(),
         status: status as u16,
