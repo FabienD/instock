@@ -1,7 +1,9 @@
 use std::str::FromStr;
 
+use anyhow::Error;
 use lapin::{Connection, ConnectionProperties};
 use log::LevelFilter;
+use playwright::Playwright;
 use sqlx::{PgPool, Pool, Postgres};
 use syslog::{BasicLogger, Facility, Formatter3164};
 
@@ -41,4 +43,12 @@ pub async fn init_db(config: DbConfig) -> Result<Pool<Postgres>, sqlx::Error> {
 
 pub async fn init_rmq(config: RmqConfig) -> Result<Connection, lapin::Error> {
     Connection::connect(config.dsn.as_str(), ConnectionProperties::default()).await
+}
+
+
+pub async fn init_browser() -> Result<Playwright, Error> {
+    let playwright = Playwright::initialize().await?;
+    playwright.install_chromium()?; // Install chromium only
+
+    Ok(playwright)
 }
