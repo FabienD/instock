@@ -36,6 +36,9 @@ fn main() {
         .expect("DB pool create");
 
         let channel = conn.create_channel().await.expect("queue_declare");
+        
+        // Headless browser manager
+        let playwright = init_browser().await.expect("Playright init failed");
 
         channel
             .queue_declare(
@@ -59,7 +62,7 @@ fn main() {
         while let Some(delivery) = consumer.next().await {
             if let Ok(delivery) = delivery {
                 // Scraping product
-                let tracking = handle_message(&delivery).await;
+                let tracking = handle_message(&delivery, &playwright).await;
                 // Save tracking result
                 match tracking {
                     Ok(tracking) => tracking.save(&pool).await.expect("Save tracking result"),

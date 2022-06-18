@@ -31,7 +31,7 @@ pub struct ParseProductInfo {
     pub in_stock: bool,
 }
 
-pub async fn handle_message(delivery: &Delivery) -> Result<Tracking> {
+pub async fn handle_message(delivery: &Delivery, playwright: &Playwright) -> Result<Tracking> {
     let message = std::str::from_utf8(&delivery.data).unwrap();
     let merchant_product: MerchantProduct =
         serde_json::from_str(message).expect("Json message decoded");
@@ -53,7 +53,7 @@ pub async fn handle_message(delivery: &Delivery) -> Result<Tracking> {
     } else if scraping_method.to_string() == ScrapingMethod::Browser.to_string() {
         handle_call_response(
             merchant_product,
-            call_url_browser(&url)
+            call_url_browser(&url, &playwright)
                 .await
                 .expect("Call url via browser method."),
         )
@@ -126,9 +126,7 @@ async fn call_url(url: &String) -> Result<CallResponse> {
     Ok(call_reponse)
 }
 
-async fn call_url_browser(url: &String) -> Result<CallResponse> {
-    let playwright = Playwright::initialize().await?;
-    playwright.prepare()?; // Install browsers
+async fn call_url_browser(url: &String, playwright: &Playwright) -> Result<CallResponse> {
     let chromium = playwright.chromium();
     let browser = chromium.launcher().headless(true).launch().await?;
     let context = browser.context_builder().build().await?;
@@ -145,6 +143,8 @@ async fn call_url_browser(url: &String) -> Result<CallResponse> {
         }
         None => println!("{} call failed!", url),
     }
+
+    browser.close().await.expect("Close browser failed");
 
     let call_reponse = CallResponse {
         url: url.to_string(),
