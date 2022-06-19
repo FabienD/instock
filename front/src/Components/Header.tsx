@@ -1,20 +1,47 @@
 // React Components
 import React, { useEffect } from 'react';
 
+
 const Header: React.FC = () => {
 
+  const navigation = [
+    { name: 'Home', href: '/' },
+    { name: 'About', href: 'about' },
+  ]
+
     return (
-       <header>
-          <div className="text-center p-10">
-            <h1 className="mb-5 text-5xl font-bold">
-              <span className='text-sky-600'>In</span>Stock?
-            </h1>
-            <p className="mb-5">
-              For months, some game consoles have been out of stock. <br />
-              This small project tries to give an overview of the availability of these products.
-            </p>
-          </div>
-      </header>
+      <>
+        <header>
+          <nav className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8" aria-label="Top">
+            <div className="w-full py-6 flex items-center justify-between border-gray-200 border-b">
+              <div className="flex items-center">
+                <a href="/">
+                  <span className="sr-only">InStock</span>
+                  <img
+                    className="h-10 w-auto"
+                    src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
+                    alt=""
+                  />
+                </a>
+                <div className="hidden ml-10 space-x-8 lg:block">
+                  {navigation.map((link) => (
+                    <a key={link.name} href={link.href} className="text-base font-medium hover:text-sky-600">
+                      {link.name}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
+              {navigation.map((link) => (
+                <a key={link.name} href={link.href} className="text-base font-medium hover:text-sky-600">
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          </nav>
+        </header>
+      </>
     )
 }
 
