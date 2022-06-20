@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    #axeptio_overlay svg path:not([fill="#FFF" i]) {
+        fill: rgb(79,70,229,1) !important;
+    }
+
+    #axeptio_overlay div.react-switch-bg {
+        background: rgb(79,70,229,1) !important;
+    }
+
+    #axeptio_btn_acceptAll, #axeptio_btn_acceptAllAndNext, #axeptio_btn_next {
+        color: rgb(79,70,229,1) !important;
+    } 
+
+    
+  }
