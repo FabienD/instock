@@ -38,7 +38,9 @@ interface TrackingLink {
 // Call API products + tracking
 const getData = async () => {
   const urls: string[] = [
+    // @ts-ignore
     import.meta.env.VITE_API_PRODUCT,
+    // @ts-ignore
     import.meta.env.VITE_API_TRACKING,
   ]
   
