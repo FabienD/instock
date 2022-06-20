@@ -55,12 +55,12 @@ const generateProductCard = (product: Product, key: number) => {
   const { id, name, description, image, links } = product
   
   return (
-    <li key={key} className='bg-gradient-to-r from-indigo-200 to-indigo-100 rounded-xl shadow-md'>
+    <li key={key} className='bg-gradient-to-r from-gray-50 to-transparent rounded-xl shadow-md'>
       <figure className='text-center bg-white rounded-t-xl p-5 border border-indigo-50'>
         <img src={image} alt={name} className='inline' />
       </figure>
-      <div className='p-4 text-indigo-900' data-product-id={id}>
-        <h3 className='font-bold pb-4'>{name}</h3>
+      <div className='p-4 text-gray-500' data-product-id={id}>
+        <h3 className='font-bold pb-4 text-indigo-600'>{name}</h3>
         <p className='pb-4'>{description}</p>
         <Links {...links}/>
       </div>

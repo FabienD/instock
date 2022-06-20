@@ -18,14 +18,14 @@ const Header: React.FC = () => {
                 <a href="/">
                   <span className="sr-only">InStock</span>
                   <img
-                    className="h-10 w-auto"
-                    src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
-                    alt=""
+                    className="w-auto"
+                    src="/instock_logo.png"
+                    alt="InStock?"
                   />
                 </a>
                 <div className="hidden ml-10 space-x-8 lg:block">
                   {navigation.map((link) => (
-                    <a key={link.name} href={link.href} className="text-base font-medium hover:text-sky-600">
+                    <a key={link.name} href={link.href} className="text-base font-medium hover:text-indigo-600">
                       {link.name}
                     </a>
                   ))}
@@ -34,7 +34,7 @@ const Header: React.FC = () => {
             </div>
             <div className="py-4 flex flex-wrap justify-center space-x-6 lg:hidden">
               {navigation.map((link) => (
-                <a key={link.name} href={link.href} className="text-base font-medium hover:text-sky-600">
+                <a key={link.name} href={link.href} className="text-base font-medium hover:text-indigo-600">
                   {link.name}
                 </a>
               ))}
