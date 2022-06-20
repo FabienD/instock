@@ -5,20 +5,29 @@ import React from 'react';
 const About: React.FC = () => {
     
     return (
-      <article>
-          <h1 className='text-2xl pt-5 pb-10'>
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 mb-1 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-            </svg>
-            About
-          </h1>
-          <section>
-            <p>The first intention of this site was to learn new programming languages like Rust or TypeScript, it was a side project.</p>
-            <p>Finally, as the project progressed, I thought it could be pushed online. 
-              I will continue to learn languages, the project will be improved, I don't know how far it will go.</p>
-            <p>The links provided are affiliate links, so if you use it, buy the product, I will be compensated.</p>
-          </section>
-      </article>
+      <>
+        <div className="bg-white">
+          <div className="max-w-5xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h1 className="text-base font-semibold text-indigo-600 tracking-wide uppercase">About</h1>
+              <p className="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+                A little side project.
+              </p>
+            </div>
+          </div>
+        </div>
+        <article>
+            <section className='prose text-center max-w-2xl mx-auto'>
+              <p>The first intention of this site was to learn new programming languages like
+              &nbsp;<a href="https://www.rust-lang.org/" target='_blank' className="underline decoration-pink-500">Rust</a> or 
+              &nbsp;<a href="https://www.typescriptlang.org/" target='_blank' className="underline decoration-pink-500">TypeScript</a>, it was a side project.
+              </p>
+              <p>Finally, as the project progressed, I thought it could be pushed online. 
+                I will continue to learn languages, the project will be improved, I don't know how far it will go.</p>
+              <p>The links provided are affiliate links, so if you use it, buy the product, I will be compensated.</p>
+            </section>
+        </article>
+      </>
     )
   }
 
