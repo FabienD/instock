@@ -33,7 +33,8 @@ pub fn run_server(pool: PgPool) -> Result<Server, std::io::Error> {
                     .max_age(3600),
             )
             .app_data(web::Data::new(pool.clone()))
-            .service(web::scope("/api/tracking").configure(tracking::init))
+            // Rename /api/tracking to /api/instock to avoid ads/trackers blocker
+            .service(web::scope("/api/instock").configure(tracking::init))
             .service(web::scope("/api/product").configure(product::init))
             .route("/health_check", 
                 web::route()
