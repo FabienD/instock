@@ -20,11 +20,12 @@ const About: React.FC = () => {
             <section className='prose text-center max-w-2xl mx-auto'>
               <p>The first intention of this site was to learn new programming languages like
               &nbsp;<a href="https://www.rust-lang.org/" target='_blank' className="underline decoration-2 decoration-indigo-500">Rust</a> or 
-              &nbsp;<a href="https://www.typescriptlang.org/" target='_blank' className="underline decoration-2 decoration-indigo-500">TypeScript</a>, it was a side project.
+              &nbsp;<a href="https://fr.reactjs.org/" target='_blank' className="underline decoration-2 decoration-indigo-500">React</a> 
+              &nbsp;with <a href="https://www.typescriptlang.org/" target='_blank' className="underline decoration-2 decoration-indigo-500">TypeScript</a>.
               </p>
               <p>Finally, as the project progressed, I thought it could be pushed online. 
                 I will continue to learn languages, the project will be improved, I don't know how far it will go.</p>
-              <p>The links provided are affiliate links, so if you use it, buy the product, I will be compensated.</p>
+              <p>The product links provided are affiliate links, so if you use it, buy the product, I will be compensated.</p>
             </section>
         </article>
       </>

@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
 
     return (
       <footer className='pt-10'>
-        <div className="max-w-5xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto pt-12 pb-5 px-4 overflow-hidden sm:px-6 lg:px-8">
           <nav className="-mx-5 -my-2 flex flex-wrap justify-center" aria-label="Footer">
             {navigation.main.map((item) => (
               <div key={item.name} className="px-5 py-2">
@@ -47,7 +47,7 @@ const Footer: React.FC = () => {
               </div>
             ))}
           </nav>
-          <div className="mt-4 mb-10 flex justify-center space-x-6">
+          <div className="mt-4 flex justify-center space-x-6">
             {navigation.social.map((item) => (
               <a key={item.name} href={item.href} target="_blank" className=" hover:text-indigo-600">
                 <span className="sr-only">{item.name}</span>
@@ -55,6 +55,9 @@ const Footer: React.FC = () => {
               </a>
             ))}
           </div>
+        </div>
+        <div className='max-w-5xl mx-auto text-center'>
+          <p className='text-xs'>Hosted by <a href="https://www.scaleway.com/fr/" target='_blank' className="underline decoration-2 decoration-indigo-500">Scaleway Element</a></p>
         </div>
     </footer>
     )
