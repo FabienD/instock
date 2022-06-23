@@ -56,7 +56,7 @@ const Footer: React.FC = () => {
             ))}
           </div>
         </div>
-        <div className='max-w-5xl mx-auto text-center'>
+        <div className='max-w-5xl mx-auto mb-5 text-center'>
           <p className='text-xs'>Hosted by <a href="https://www.scaleway.com/fr/" target='_blank' className="underline decoration-2 decoration-indigo-500">Scaleway Element</a></p>
         </div>
     </footer>

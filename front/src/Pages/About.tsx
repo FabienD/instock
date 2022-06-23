@@ -19,7 +19,7 @@ const About: React.FC = () => {
         <article>
             <section className='prose text-center max-w-2xl mx-auto'>
               <p>The first intention of this site was to learn new programming languages like
-              &nbsp;<a href="https://www.rust-lang.org/" target='_blank' className="underline decoration-2 decoration-indigo-500">Rust</a> or 
+              &nbsp;<a href="https://www.rust-lang.org/" target='_blank' className="underline decoration-2 decoration-indigo-500">Rust</a> and 
               &nbsp;<a href="https://fr.reactjs.org/" target='_blank' className="underline decoration-2 decoration-indigo-500">React</a> 
               &nbsp;with <a href="https://www.typescriptlang.org/" target='_blank' className="underline decoration-2 decoration-indigo-500">TypeScript</a>.
               </p>
