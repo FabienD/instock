@@ -41,7 +41,7 @@ fn main() {
             .expect("Build Http client");
 
         let url =
-            format!("{api_scheme}://{api_host}:{api_port}/api/tracking/last?only_positive=true");
+            format!("{api_scheme}://{api_host}:{api_port}/api/instock/last?only_positive=true");
         let mut response = client.get(url).expect("Process API request");
 
         if response.status().as_u16() <= 400 {
