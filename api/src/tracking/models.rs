@@ -2,13 +2,14 @@ use actix_web::body::BoxBody;
 use actix_web::{web, HttpRequest, HttpResponse, Responder};
 use anyhow::Result;
 use chrono::serde::ts_seconds;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Utc, Duration};
 use serde::{Deserialize, Serialize};
 use sqlx::{types::Uuid, FromRow, PgPool};
 
 #[derive(Debug, Deserialize)]
 pub struct Filter {
     pub only_positive: Option<String>,
+    pub since_hours: Option<String>,
 }
 
 #[derive(Debug, Serialize, FromRow)]
@@ -38,13 +39,21 @@ impl Responder for Tracking {
 
 impl Tracking {
     pub async fn get_last(filter: &web::Query<Filter>, pool: &PgPool) -> Result<Vec<Tracking>> {
-        let mut sql_filter = vec![true, false];
+        let mut sql_instock_filter = vec![true, false];
+        let mut sql_tracked_at_since_hour_filter:i64 = 6;
 
         match filter.only_positive.to_owned() {
             Some(f) => {
                 if matches!(f.as_str(), "true" | "t" | "1") {
-                    sql_filter = vec![true];
+                    sql_instock_filter = vec![true];
                 }
+            }
+            _ => {}
+        }
+        
+        match filter.since_hours.to_owned() {
+            Some(f) => {
+                sql_tracked_at_since_hour_filter = f.parse::<i64>().unwrap_or(6);
             }
             _ => {}
         }
@@ -58,7 +67,7 @@ impl Tracking {
                     t.is_in_stock, 
                     t.tracked_at
                 FROM instock.tracking AS t
-                WHERE t.is_in_stock = ANY($1)
+                WHERE t.is_in_stock = ANY($1) AND t.tracked_at > $2
                 ORDER BY t.merchant_product_id, t.tracked_at DESC
             ), tracked_products AS (
                 SELECT
@@ -87,7 +96,8 @@ impl Tracking {
             FROM tracked_products AS tp 
             GROUP BY tp.product_id, tp.product_name
             "#,
-            &sql_filter
+            &sql_instock_filter, 
+            Utc::now() - Duration::hours(sql_tracked_at_since_hour_filter)
         )
         .fetch_all(pool)
         .await?;
