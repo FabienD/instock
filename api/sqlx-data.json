@@ -60,8 +60,8 @@
       ]
     }
   },
-  "c4c2d2b88520e7b221f751167fe49f6e43d6fb5ca388052603df528929803bae": {
-    "query": "WITH last_tracking AS (\n                SELECT \n                    DISTINCT ON (t.merchant_product_id) t.merchant_product_id,\n                    t.price,\n                    t.is_in_stock, \n                    t.tracked_at\n                FROM instock.tracking AS t\n                WHERE t.is_in_stock = ANY($1)\n                ORDER BY t.merchant_product_id, t.tracked_at DESC\n            ), tracked_products AS (\n                SELECT\n                    p.id as product_id,\n                    p.name as product_name,\n                    m.name as merchant,\n                    COALESCE(mp.affiliate_url, mp.url) as product_merchant_url,\n                    lt.price,\n                    lt.is_in_stock, \n                    lt.tracked_at\n                FROM last_tracking AS lt\n                    JOIN instock.merchant_product AS mp ON mp.id = lt.merchant_product_id\n                    JOIN instock.product AS p ON p.id = mp.product_id\n                    JOIN instock.merchant AS m ON m.id = mp.merchant_id\n            )\n            SELECT \n                tp.product_id,\n                tp.product_name,\n                array_agg((\n                    tp.product_merchant_url,\n                    tp.merchant,\n                    tp.price,\n                    tp.is_in_stock,\n                    tp.tracked_at\n                )) as \"links!: Vec<TrackingLink>\"\n            FROM tracked_products AS tp \n            GROUP BY tp.product_id, tp.product_name\n            ",
+  "d6c7a316b2a687407cad95ddf00f578f60f4d6a840f4696623eb216f64a5a3ef": {
+    "query": "WITH last_tracking AS (\n                SELECT \n                    DISTINCT ON (t.merchant_product_id) t.merchant_product_id,\n                    t.price,\n                    t.is_in_stock, \n                    t.tracked_at\n                FROM instock.tracking AS t\n                WHERE t.is_in_stock = ANY($1) AND t.tracked_at > $2\n                ORDER BY t.merchant_product_id, t.tracked_at DESC\n            ), tracked_products AS (\n                SELECT\n                    p.id as product_id,\n                    p.name as product_name,\n                    m.name as merchant,\n                    COALESCE(mp.affiliate_url, mp.url) as product_merchant_url,\n                    lt.price,\n                    lt.is_in_stock, \n                    lt.tracked_at\n                FROM last_tracking AS lt\n                    JOIN instock.merchant_product AS mp ON mp.id = lt.merchant_product_id\n                    JOIN instock.product AS p ON p.id = mp.product_id\n                    JOIN instock.merchant AS m ON m.id = mp.merchant_id\n            )\n            SELECT \n                tp.product_id,\n                tp.product_name,\n                array_agg((\n                    tp.product_merchant_url,\n                    tp.merchant,\n                    tp.price,\n                    tp.is_in_stock,\n                    tp.tracked_at\n                )) as \"links!: Vec<TrackingLink>\"\n            FROM tracked_products AS tp \n            GROUP BY tp.product_id, tp.product_name\n            ",
     "describe": {
       "columns": [
         {
@@ -82,7 +82,8 @@
       ],
       "parameters": {
         "Left": [
-          "BoolArray"
+          "BoolArray",
+          "Timestamptz"
         ]
       },
       "nullable": [
