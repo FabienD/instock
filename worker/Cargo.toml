@@ -23,9 +23,9 @@ path = "src/notifier_consumer.rs"
 [dependencies]
 async-global-executor = "*"
 futures-lite = "*"
-sqlx = { version = "0.5", features = [ "runtime-async-std-native-tls" , "postgres", "json", "uuid", "macros", "chrono", "migrate", "offline", "bigdecimal" ] }
+sqlx = { version = "0.6.0", features = [ "runtime-async-std-native-tls" , "postgres", "json", "uuid", "macros", "chrono", "migrate", "offline", "bigdecimal" ] }
 serde = "1"
-uuid = { version = "0.8", features = ["serde", "v4"] }
+uuid = { version = "1.1.2", features = ["serde", "v4"] }
 serde_json = "1"
 chrono = { version = "*", features = ["serde"] } 
 lapin = "2.0"
@@ -39,5 +39,5 @@ rand = "0.8"
 regex = "1.5"
 voca_rs = "1.14"
 playwright = "0.0.19"
-lettre = { version = "0.10.0-rc.6", default-features = false, features = ["smtp-transport", "async-std1", "async-std1-rustls-tls", "hostname", "builder"] }
+lettre = { version = "0.10.0-rc.7", default-features = false, features = ["smtp-transport", "async-std1", "async-std1-rustls-tls", "hostname", "builder"] }
 bigdecimal = "0.3.0"

@@ -36,12 +36,11 @@ pub async fn handle_message(delivery: &Delivery, playwright: &Playwright) -> Res
     let merchant_product: MerchantProduct =
         serde_json::from_str(message).expect("Json message decoded");
     // Get url content.
-    let url: String = merchant_product.url.as_ref().unwrap().to_owned();
+    let url: String = merchant_product.url.to_owned();
     // Merchant can use different scraping method.
     let scraping_method = merchant_product
         .merchant
         .scraping_method
-        .unwrap()
         .to_owned();
 
     if scraping_method.to_string() == ScrapingMethod::Library.to_string() {
@@ -67,14 +66,13 @@ async fn handle_call_response(
     merchant_product: MerchantProduct,
     call_response: CallResponse,
 ) -> Result<Tracking> {
-    let url = merchant_product.url.unwrap();
+    let url = merchant_product.url;
 
     if call_response.is_success() {
         // Get scraping elements by merchant
         let scaping_elements = merchant_product
             .merchant
-            .scraping_elements
-            .expect("Get scraping elements");
+            .scraping_elements;
 
         let title = scaping_elements.title.to_owned();
         let cart = scaping_elements.cart.to_owned();
@@ -86,7 +84,7 @@ async fn handle_call_response(
             .expect("Parsing result");
 
         let tracking = Tracking {
-            product_id: merchant_product.id.unwrap(),
+            product_id: merchant_product.id,
             price: parse_result.price,
             is_in_stock: parse_result.in_stock,
         };

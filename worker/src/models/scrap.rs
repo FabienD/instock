@@ -32,15 +32,15 @@ pub struct ScrapingElements {
 
 #[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
 pub struct Merchant {
-    pub id: Option<Uuid>,
-    pub scraping_elements: Option<Json<ScrapingElements>>,
-    pub scraping_method: Option<ScrapingMethod>,
+    pub id: Uuid,
+    pub scraping_elements: Json<ScrapingElements>,
+    pub scraping_method: ScrapingMethod,
 }
 
 #[derive(Debug, Clone, FromRow, Serialize, Deserialize)]
 pub struct MerchantProduct {
-    pub id: Option<Uuid>,
-    pub url: Option<String>,
+    pub id: Uuid,
+    pub url: String,
     pub merchant: Merchant,
 }
 
@@ -57,6 +57,7 @@ impl MerchantProduct {
             FROM instock.merchant_product AS mp
                 JOIN instock.merchant AS m ON m.id = mp.merchant_id
             WHERE mp.tracked IS TRUE
+            ORDER BY md5(random()::text)
             "#
         )
         .fetch_all(pool)
