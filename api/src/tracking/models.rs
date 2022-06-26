@@ -82,6 +82,7 @@ impl Tracking {
                     JOIN instock.merchant_product AS mp ON mp.id = lt.merchant_product_id
                     JOIN instock.product AS p ON p.id = mp.product_id
                     JOIN instock.merchant AS m ON m.id = mp.merchant_id
+                ORDER BY p.id, m.name
             )
             SELECT 
                 tp.product_id,
