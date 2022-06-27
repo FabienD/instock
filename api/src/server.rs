@@ -9,6 +9,7 @@ use std::env;
 use crate::default::health_check;
 use crate::product;
 use crate::tracking;
+use crate::user;
 
 pub fn run_server(pool: PgPool) -> Result<Server, std::io::Error> {
     dotenv().ok();
@@ -36,6 +37,7 @@ pub fn run_server(pool: PgPool) -> Result<Server, std::io::Error> {
             // Rename /api/tracking to /api/instock to avoid ads/trackers blocker
             .service(web::scope("/api/instock").configure(tracking::init))
             .service(web::scope("/api/product").configure(product::init))
+            .service(web::scope("/api/user").configure(user::init))
             .route("/health_check", 
                 web::route()
                         .guard(guard::Any(guard::Get()).or(guard::Head()))

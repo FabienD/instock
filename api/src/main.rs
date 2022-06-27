@@ -11,6 +11,7 @@ mod default;
 mod product;
 mod server;
 mod tracking;
+mod user;
 
 pub use crate::config::*;
 pub use crate::server::run_server;

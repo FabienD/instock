@@ -122,3 +122,21 @@ ALTER TABLE IF EXISTS instock.merchant_product
 
 ALTER TABLE IF EXISTS instock.user_tracking
     ADD COLUMN max_price numeric(8, 2);
+
+
+CREATE TABLE IF NOT EXISTS  instock.user_auth_info (
+    user_id UUID PRIMARY KEY,
+    salt CHAR(32) NOT NULL,
+    hash CHAR(32) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
+);
+
+ALTER TABLE  instock.user_auth_info
+ADD CONSTRAINT user_auth_info_user_id_fk
+    FOREIGN KEY (user_id)
+    REFERENCES  instock.user(id)
+    ON DELETE CASCADE;
+
+ALTER TABLE instock.user 
+    ADD COLUMN link_id UUID DEFAULT gen_random_uuid();
