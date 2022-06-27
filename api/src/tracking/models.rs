@@ -40,7 +40,7 @@ impl Responder for Tracking {
 impl Tracking {
     pub async fn get_last(filter: &web::Query<Filter>, pool: &PgPool) -> Result<Vec<Tracking>> {
         let mut sql_instock_filter = vec![true, false];
-        let mut sql_tracked_at_since_hour_filter:i64 = 6;
+        let mut sql_tracked_at_since_hour_filter:i64 = 24;
 
         match filter.only_positive.to_owned() {
             Some(f) => {
@@ -53,7 +53,7 @@ impl Tracking {
         
         match filter.since_hours.to_owned() {
             Some(f) => {
-                sql_tracked_at_since_hour_filter = f.parse::<i64>().unwrap_or(6);
+                sql_tracked_at_since_hour_filter = f.parse::<i64>().unwrap_or(sql_tracked_at_since_hour_filter);
             }
             _ => {}
         }
