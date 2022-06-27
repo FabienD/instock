@@ -57,12 +57,12 @@ const generateProductCard = (product: Product, key: number) => {
   const { id, name, description, image, links } = product
   
   return (
-    <li key={key} className='bg-gradient-to-r from-gray-50 to-transparent rounded-xl shadow-md'>
+    <li key={key} className='bg-gradient-to-r from-indigo-100 to-indigo-50 rounded-xl shadow-md'>
       <figure className='text-center bg-white rounded-t-xl p-5 border border-indigo-50'>
         <img src={image} alt={name} width="200" height="169" className='inline' />
       </figure>
       <div className='p-4 text-gray-500' data-product-id={id}>
-        <h3 className='font-bold pb-4 text-indigo-600'>{name}</h3>
+        <h3 className='font-bold pb-4 text-indigo-800'>{name}</h3>
         <p className='pb-4'>{description}</p>
         <Links {...links}/>
       </div>
@@ -74,7 +74,7 @@ const generateTrackingLink = (link: TrackingLink, key: number) => {
 
   const { merchant_product_url, merchant, price, is_in_stock, tracked_at } = link
   const date = new Date(parseInt(tracked_at) * 1e3)
-  const formatedDate = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium', timeStyle: 'short' }).format(date)
+  const formatedDate = new Intl.DateTimeFormat('en-US', { dateStyle: 'short', timeStyle: 'short' }).format(date)
   
   return (
     <li key={key} className='p-2'>
