@@ -4,9 +4,12 @@ use chrono::{DateTime, Utc};
 use serde::{Serialize, Deserialize};
 use sqlx::{FromRow, PgPool};
 use sqlx::types::Uuid;
+use validator::Validate;
 
-#[derive(Debug, Serialize, Deserialize)]
+
+#[derive(Debug, Validate, Serialize, Deserialize)]
 pub struct UserInfo {
+    #[validate(email)]
     email: String,
 }
 
@@ -38,7 +41,7 @@ impl User {
     ) -> Result<()> {
         
         // Check CSRF
-
+        
         // Check Email doesn't exist
 
         // Persist User
