@@ -104,5 +104,6 @@ volumes:
 
 # Network
 networks:
-  instock:
+  default:
+    name: instock
     external: true

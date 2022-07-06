@@ -2,6 +2,9 @@ target/
 .env
 docker-compose.yml
 node_modules/
+/sql/dump
+/sql/replibyte.yaml
+
 
 # dependencies
 /node_modules
