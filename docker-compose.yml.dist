@@ -3,7 +3,7 @@ services:
 
   reverse-proxy:
     container_name: traefik
-    image: traefik:2.7
+    image: traefik:2.8
     command:
       --api.dashboard=true
       --providers.docker=true
@@ -92,7 +92,7 @@ services:
 
 
   db:
-    image: timescale/timescaledb:latest-pg14
+    image: myprod/db:pg.14
     container_name: instock.db
     env_file: .env  
     ports: 

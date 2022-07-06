@@ -67,7 +67,7 @@ impl Tracking {
                     t.is_in_stock, 
                     t.tracked_at
                 FROM instock.tracking AS t
-                WHERE t.is_in_stock = ANY($1) AND t.tracked_at > $2
+                WHERE t.tracked_at > $2
                 ORDER BY t.merchant_product_id, t.tracked_at DESC
             ), tracked_products AS (
                 SELECT
@@ -82,6 +82,7 @@ impl Tracking {
                     JOIN instock.merchant_product AS mp ON mp.id = lt.merchant_product_id
                     JOIN instock.product AS p ON p.id = mp.product_id
                     JOIN instock.merchant AS m ON m.id = mp.merchant_id
+                WHERE lt.is_in_stock = ANY($1) 
                 ORDER BY p.id, m.name
             )
             SELECT 
