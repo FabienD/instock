@@ -1,0 +1,9 @@
+[program:notifier-consumer]
+directory=/home/ubuntu/app/
+command=/home/ubuntu/app/worker/target/release/notifier-consumer
+user=ubuntu
+autostart=true
+stdout_logfile=/var/log/notifier-consumer.log
+stdout_logfile_maxbytes=50MB
+startretries=3
+startsecs=0   

@@ -9,3 +9,9 @@ The goal of this side project is :
 
 * to track out-of-stock products on e-commerces platforms. I use web scrapping, method that can not work on every site.
 * and be notified when available,
+
+
+# THIS PROJECT IS NO LONGER MAINTAINED
+
+![Home page](./doc/screenshots/instock_home.png)
+![About page](./doc/screenshots/instock_about.png)
